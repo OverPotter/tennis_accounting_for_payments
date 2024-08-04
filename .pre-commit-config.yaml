@@ -1,0 +1,29 @@
+repos:
+- repo: https://github.com/python-poetry/poetry
+  rev: ''
+  hooks:
+    - id: poetry-check
+    - id: poetry-lock
+    - id: poetry-install
+- repo: local
+  hooks:
+    - id: ruff
+      name: Ruff
+      stages: [pre-commit, pre-push]
+      language: system
+      entry: poetry run ruff check ./src
+      types: [python]
+
+    - id: black
+      name: Black
+      stages: [pre-commit, pre-push]
+      language: system
+      entry: poetry run black ./src --check
+      types: [python]
+
+    - id: isort
+      name: Isort
+      stages: [pre-commit, pre-push]
+      language: system
+      entry: poetry run isort ./src
+      types: [python]
