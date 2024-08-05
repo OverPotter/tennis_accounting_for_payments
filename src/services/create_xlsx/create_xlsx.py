@@ -1,4 +1,3 @@
-import asyncio
 import locale
 
 from openpyxl import Workbook
@@ -114,7 +113,3 @@ class CreateExcelTableService(AbstractCreateTableService):
         ws.oddHeader.right.text = "right"
         filename = f"{TMP_DIR}/{current_month_name}_{current_year}.xlsx"
         wb.save(filename)
-
-
-if __name__ == "__main__":
-    asyncio.run(CreateExcelTableService.create_xlsx_table())

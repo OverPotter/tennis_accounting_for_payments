@@ -163,3 +163,6 @@ cython_debug/
 
 # TMP files
 src/tmp/
+
+# But do not ignore the src/tmp/ directory itself
+!src/tmp/
