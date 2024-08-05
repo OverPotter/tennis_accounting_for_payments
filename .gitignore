@@ -162,7 +162,7 @@ cython_debug/
 .idea/
 
 # TMP files
-src/tmp/
+src/tmp/*
 
 # But do not ignore the src/tmp/ directory itself
 !src/tmp/
