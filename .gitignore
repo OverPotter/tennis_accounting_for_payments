@@ -162,6 +162,7 @@ cython_debug/
 .idea/
 
 # TMP files
+# Ignore all files in src/tmp/
 src/tmp/*
 
 # But do not ignore the src/tmp/ directory itself
