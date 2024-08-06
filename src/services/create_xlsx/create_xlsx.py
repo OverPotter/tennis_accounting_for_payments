@@ -11,11 +11,11 @@ from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
 class CreateExcelTableService(AbstractCreateTableService):
 
     def __init__(self):
-        self.bright_green_fill = PatternFill(
+        self._bright_green_fill = PatternFill(
             start_color="9ACD32", end_color="9ACD32", fill_type="solid"
         )
-        self.black_font = Font(color="000000")
-        self.thin_border = Border(
+        self._black_font = Font(color="000000")
+        self._thin_border = Border(
             left=Side(style="thin"),
             right=Side(style="thin"),
             top=Side(style="thin"),
@@ -92,6 +92,6 @@ class CreateExcelTableService(AbstractCreateTableService):
     def _set_cell(self, ws, row, column, value):
         cell = ws.cell(row=row, column=column, value=value)
         cell.alignment = Alignment(horizontal="center", vertical="center")
-        cell.fill = self.bright_green_fill
-        cell.font = self.black_font
-        cell.border = self.thin_border
+        cell.fill = self._bright_green_fill
+        cell.font = self._black_font
+        cell.border = self._thin_border
