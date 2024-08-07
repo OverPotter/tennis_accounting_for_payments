@@ -1,0 +1,44 @@
+@startuml
+
+entity "users" as users {
+    *id : int
+    --
+    name : varchar
+}
+
+entity "tennis_training_type" as tennis_types {
+    *id : int
+    --
+    name : varchar
+}
+
+entity "number_of_tennis_training_available" as tennis_balances {
+    *user_id : int
+    *tennis_type_id : int
+    --
+    number_of_training : int
+}
+
+entity "visits" as visits {
+    *id : int
+    *user_id : int
+    *tennis_type_id : int
+    --
+    visit_datetime : datetime
+}
+
+entity "payments" as payments {
+    *id : int
+    *user_id : int
+    --
+    payment_date : datetime
+    amount : float
+}
+
+users ||--o{ tennis_balances
+tennis_types ||--|| tennis_balances
+users ||--o{ visits
+tennis_types ||--|| visits
+users ||--o{ payments
+
+@enduml
