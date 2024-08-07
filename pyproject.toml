@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.10"
 openpyxl = "^3.1.5"
 babel = "^2.15.0"
+pydantic = "^2.8.2"
+sqlalchemy = "^2.0.32"
 
 
 [tool.poetry.group.lint.dependencies]
@@ -20,6 +22,79 @@ isort = "^5.13.2"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
 
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 80
+
+[tool.isort]
+profile = "black"
+line_length = 80
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # Pyflakes
+    "W",    # Warning
+#    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "EXE",  # flake8-executable,
+    "ISC",  # flake8-implicit-str-concat
+    "G",    # flake8-logging-format
+    "T20",  # flake8-print
+#    "PT",   # flake8-pytest-style
+#    "RSE",  # flake8-raise
+#    "RET",  # flake8-return
+    "TID",  # flake8-tidy-imports
+#    "ARG",  # flake8-unused-arguments
+    "PGH",  # pygrep-hooks
+    "PLC",  # Pylint Convention
+    "PLE",  # Pylint Errors
+
+    # ** Things to potentially enable in the future **
+    # DTZ requires all usage of datetime module to have timezone-aware
+    # objects (so have a tz argument or be explicitly UTC).
+#     "DTZ",  # flake8-datetimez
+#     "PTH",  # flake8-use-pathlib
+#     "SIM",  # flake8-simplify
+]
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D107",
+    "D105",
+    "D106",
+    "D200",
+    "D400",
+    "D413",
+    "E501",
+    "E402",
+    "E731",
+    "F821",
+    "N815",
+    "N805",
+    "W291",
+    "EXE002",
+    "RUF012",
+    "PGH003",
+    "A003",
+    "ARG002",
+    "RET504",
+    "RET502",
+    "RET505",
+    "G004",
+    "RUF100",
+]

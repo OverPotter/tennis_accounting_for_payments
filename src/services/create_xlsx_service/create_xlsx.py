@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 from src.constants import TMP_DIR
-from src.services.create_xlsx.abc import AbstractCreateTableService
+from src.services.create_xlsx_service.abc import AbstractCreateTableService
 from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
 
 
@@ -53,7 +53,9 @@ class CreateExcelTableService(AbstractCreateTableService):
             end_column=6 + number_days_of_in_month + 1,
         )
 
-        self._set_cell(ws, row=1, column=1, value=current_month_name.capitalize())
+        self._set_cell(
+            ws, row=1, column=1, value=current_month_name.capitalize()
+        )
         self._set_cell(ws, row=1, column=7, value="Дата")
         self._set_cell(
             ws,
@@ -86,7 +88,9 @@ class CreateExcelTableService(AbstractCreateTableService):
         ws.column_dimensions["F"].width = 15  # Date of payment
 
         last_column_index = 6 + number_days_of_in_month + 1
-        last_column_letter = ws.cell(row=1, column=last_column_index).column_letter
+        last_column_letter = ws.cell(
+            row=1, column=last_column_index
+        ).column_letter
         ws.column_dimensions[last_column_letter].width = 35
 
     def _set_cell(self, ws, row, column, value):
