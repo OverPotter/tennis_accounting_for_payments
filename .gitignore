@@ -161,8 +161,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
+# TMP files
 # Ignore all files in src/tmp/
 src/tmp/*
 
 # But do not ignore the src/tmp/ directory itself
 !src/tmp/
+
+.DS_Store

@@ -1,13 +1,14 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped
 
-from src.database.models._universal_type_annotations import created_at, updated_at
+from src.database.models._universal_type_annotations import intpk
 
 
-class Base(DeclarativeBase): ...
+class Base(DeclarativeBase):
+    pass
 
 
-class CreatedUpdatedModel(Base):
+class BaseIDModel(Base):
     __abstract__ = True
+    __table_args__ = ()
 
-    created_at: Mapped[created_at]
-    updated_at: Mapped[updated_at]
+    id: Mapped[intpk]
