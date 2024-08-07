@@ -18,7 +18,7 @@ repos:
       name: Black
       stages: [pre-commit, pre-push]
       language: system
-      entry: poetry run black ./src --check
+      entry: poetry run black ./src
       types: [python]
 
     - id: isort

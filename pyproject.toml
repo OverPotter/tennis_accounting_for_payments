@@ -7,8 +7,17 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-openpyxl = "^3.1.5"
-babel = "^2.15.0"
+aiogram = "^3.10.0"
+requests = "^2.32.3"
+pymysql = "^1.1.1"
+alembic = "^1.13.2"
+aiomysql = "^0.2.0"
+pydantic-settings = "^2.3.4"
+python-dotenv = "^1.0.1"
+greenlet = "^3.0.3"
+fastapi = "^0.111.1"
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.31" }
+psycopg2-binary = "^2.9"
 
 
 [tool.poetry.group.lint.dependencies]
@@ -23,3 +32,11 @@ pre-commit = "^3.8.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']
+
+[tool.isort]
+profile = "black"
