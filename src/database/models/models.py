@@ -5,7 +5,7 @@ from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.models.base import Base, BaseIDModel
-from src.schemas.enums.training_type import TrainingTypeEnum
+from src.schemas.enums.training_types import TrainingTypesEnum
 
 
 class ClientModel(BaseIDModel):
@@ -29,7 +29,7 @@ class NumberOfTennisTrainingAvailable(Base):
         ForeignKey("clients.id"), primary_key=True
     )
     number_of_training: Mapped[int] = mapped_column(Integer)
-    training_type: Mapped[TrainingTypeEnum] = mapped_column(nullable=False)
+    training_type: Mapped[TrainingTypesEnum] = mapped_column(nullable=False)
 
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="number_of_trainings_available"
@@ -40,7 +40,7 @@ class VisitModel(BaseIDModel):
     __tablename__ = "visits"
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
     visit_datetime: Mapped[datetime] = mapped_column(DateTime)
-    training_type: Mapped[TrainingTypeEnum] = mapped_column(nullable=False)
+    training_type: Mapped[TrainingTypesEnum] = mapped_column(nullable=False)
 
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="visits"
