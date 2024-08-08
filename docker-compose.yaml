@@ -6,6 +6,9 @@ services:
       dockerfile: system/Dockerfile
       context: .
     container_name: tennis_telegram_bot
+    env_file:
+      - ./docker/backend/.env
+    restart: always
     depends_on:
       - mariadb
 
@@ -14,8 +17,6 @@ services:
     container_name: tennis_mariadb
     ports:
       - "3306:3306"
-    environment:
-      MARIADB_DATABASE: "${MARIADB_DATABASE}"
-      MARIADB_USER: "${MARIADB_USER}"
-      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
-      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
+    env_file:
+      - ./docker/mariadb/.env
+    restart: always
