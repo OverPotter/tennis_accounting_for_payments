@@ -5,13 +5,13 @@ services:
     build:
       dockerfile: system/Dockerfile
       context: .
-    container_name: telegram_bot
+    container_name: tennis_telegram_bot
     depends_on:
       - mariadb
 
   mariadb:
     image: mariadb:10.6
-    container_name: mariadb
+    container_name: tennis_mariadb
     ports:
       - "3306:3306"
     environment:
