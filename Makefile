@@ -17,3 +17,14 @@ setup:
 
 up:
 	docker compose --env-file .env.compose up --remove-orphans --build \
+		bot \
+		mariadb
+
+db_downgrade:
+	alembic downgrade -1
+
+db_migrate:
+	alembic revision --autogenerate -m "Upgrade database tables"
+
+db_upgrade:
+	alembic upgrade head

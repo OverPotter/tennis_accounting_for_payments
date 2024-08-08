@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped
+
+from src.database.models._universal_type_annotations import intpk
 
 
 class Base(DeclarativeBase):
@@ -10,4 +11,4 @@ class BaseIDModel(Base):
     __abstract__ = True
     __table_args__ = ()
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[intpk]

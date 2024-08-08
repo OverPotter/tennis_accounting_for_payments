@@ -9,7 +9,7 @@ from src.database.models.base import Base, BaseIDModel
 
 class UserModel(BaseIDModel):
     __tablename__ = "users"
-    name: Mapped[str] = mapped_column(String)
+    name: Mapped[str] = mapped_column(String(255))
 
     number_of_trainings_available: Mapped[
         List["NumberOfTennisTrainingAvailable"]
@@ -24,7 +24,7 @@ class UserModel(BaseIDModel):
 
 class TennisTrainingTypeModel(BaseIDModel):
     __tablename__ = "tennis_training_type"
-    name: Mapped[str] = mapped_column(String)
+    name: Mapped[str] = mapped_column(String(255))
 
     number_of_trainings_available: Mapped["NumberOfTennisTrainingAvailable"] = (
         relationship(

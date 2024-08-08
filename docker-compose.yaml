@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  bot:
+    build:
+      dockerfile: system/Dockerfile
+      context: .
+    container_name: tennis_telegram_bot
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: tennis_mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
