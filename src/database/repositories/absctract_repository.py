@@ -25,8 +25,7 @@ class AbstractRepository(ABC, Generic[_MODEL_TYPE]):
     async def create(self, **kwargs) -> _MODEL_TYPE:
         entity = self._model(**kwargs)
         self._session.add(entity)
-        await self._session.flush([entity])
-        await self._session.refresh(entity)
+        await self._session.commit()
         return entity
 
     async def get(self, **kwargs) -> _MODEL_TYPE:

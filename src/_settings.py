@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     MD_DB_NAME: str
 
     REQUEST_TIMEOUT: int = 60
+    DEBUG: bool = False
 
     API_TOKEN: str
 
