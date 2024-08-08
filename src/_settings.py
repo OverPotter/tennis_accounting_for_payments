@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from src.constants import ENV_PATH
+
 load_dotenv()
 
 
@@ -12,6 +14,7 @@ class Settings(BaseSettings):
     MD_DB_NAME: str
 
     REQUEST_TIMEOUT: int = 60
+    DEBUG: bool = False
 
     API_TOKEN: str
 
@@ -22,4 +25,4 @@ class Settings(BaseSettings):
 
 
 def settings_factory() -> Settings:
-    return Settings(_env_file=".env")
+    return Settings(_env_file=ENV_PATH)
