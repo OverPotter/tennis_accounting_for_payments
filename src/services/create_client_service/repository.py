@@ -17,7 +17,7 @@ class RepositoryCreateClientService(AbstractCreateClientService):
             logging.info(f"{self.__class__}: User already exists.")
             return True
 
-        user = await self._client_repository.create(name=user_name)
+        client = await self._client_repository.create(name=user_name)
 
         logging.info(f"{self.__class__}: User created.")
-        return bool(user)
+        return bool(client)

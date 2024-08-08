@@ -8,17 +8,17 @@ from src.database.models.base import Base, BaseIDModel
 
 
 class ClientModel(BaseIDModel):
-    __tablename__ = "users"
+    __tablename__ = "clients"
     name: Mapped[str] = mapped_column(String(255))
 
     number_of_trainings_available: Mapped[
         List["NumberOfTennisTrainingAvailable"]
-    ] = relationship("NumberOfTennisTrainingAvailable", back_populates="user")
+    ] = relationship("NumberOfTennisTrainingAvailable", back_populates="client")
     visits: Mapped[List["VisitModel"]] = relationship(
-        "VisitModel", back_populates="user"
+        "VisitModel", back_populates="client"
     )
     payments: Mapped[List["PaymentModel"]] = relationship(
-        "PaymentModel", back_populates="user"
+        "PaymentModel", back_populates="client"
     )
 
 
@@ -40,8 +40,8 @@ class TennisTrainingTypeModel(BaseIDModel):
 
 class NumberOfTennisTrainingAvailable(Base):
     __tablename__ = "number_of_tennis_training_available"
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"), primary_key=True
+    client_id: Mapped[int] = mapped_column(
+        ForeignKey("clients.id"), primary_key=True
     )
     tennis_type_id: Mapped[int] = mapped_column(
         ForeignKey("tennis_training_type.id"), primary_key=True
@@ -59,7 +59,7 @@ class NumberOfTennisTrainingAvailable(Base):
 
 class VisitModel(BaseIDModel):
     __tablename__ = "visits"
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
     tennis_type_id: Mapped[int] = mapped_column(
         ForeignKey("tennis_training_type.id")
     )
@@ -75,7 +75,7 @@ class VisitModel(BaseIDModel):
 
 class PaymentModel(BaseIDModel):
     __tablename__ = "payments"
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
     payment_date: Mapped[datetime] = mapped_column(DateTime)
     amount: Mapped[float] = mapped_column(Float)
 
