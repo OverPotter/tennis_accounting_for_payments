@@ -1,8 +1,8 @@
-"""Create models
+"""Create tables
 
-Revision ID: 8d7c43ed8725
+Revision ID: 5d1022a0b833
 Revises: 
-Create Date: 2024-08-08 13:23:15.827677
+Create Date: 2024-08-08 20:49:50.305608
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "8d7c43ed8725"
+revision: str = "5d1022a0b833"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,25 +27,24 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
-        "tennis_training_type",
-        sa.Column("name", sa.String(length=255), nullable=False),
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_table(
         "number_of_tennis_training_available",
         sa.Column("client_id", sa.Integer(), nullable=False),
-        sa.Column("tennis_type_id", sa.Integer(), nullable=False),
         sa.Column("number_of_training", sa.Integer(), nullable=False),
+        sa.Column(
+            "training_type",
+            sa.Enum(
+                "INDIVIDUAL_TRAINING",
+                "SPLIT_TRAINING",
+                "GROUP_TRAINING",
+                name="trainingtypeenum",
+            ),
+            nullable=False,
+        ),
         sa.ForeignKeyConstraint(
             ["client_id"],
             ["clients.id"],
         ),
-        sa.ForeignKeyConstraint(
-            ["tennis_type_id"],
-            ["tennis_training_type.id"],
-        ),
-        sa.PrimaryKeyConstraint("client_id", "tennis_type_id"),
+        sa.PrimaryKeyConstraint("client_id"),
     )
     op.create_table(
         "payments",
@@ -62,16 +61,21 @@ def upgrade() -> None:
     op.create_table(
         "visits",
         sa.Column("client_id", sa.Integer(), nullable=False),
-        sa.Column("tennis_type_id", sa.Integer(), nullable=False),
         sa.Column("visit_datetime", sa.DateTime(), nullable=False),
+        sa.Column(
+            "training_type",
+            sa.Enum(
+                "INDIVIDUAL_TRAINING",
+                "SPLIT_TRAINING",
+                "GROUP_TRAINING",
+                name="trainingtypeenum",
+            ),
+            nullable=False,
+        ),
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.ForeignKeyConstraint(
             ["client_id"],
             ["clients.id"],
-        ),
-        sa.ForeignKeyConstraint(
-            ["tennis_type_id"],
-            ["tennis_training_type.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -83,6 +87,5 @@ def downgrade() -> None:
     op.drop_table("visits")
     op.drop_table("payments")
     op.drop_table("number_of_tennis_training_available")
-    op.drop_table("tennis_training_type")
     op.drop_table("clients")
     # ### end Alembic commands ###
