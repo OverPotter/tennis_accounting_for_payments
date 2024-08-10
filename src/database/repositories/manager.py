@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.repositories.abstract_manager import AbstractRepositoryManager
+from src.database.repositories.payment_repository import PaymentRepository
 from src.database.repositories.user_repository import ClientRepository
 from src.db_manager import session_factory
 
@@ -21,6 +22,9 @@ class OrmRepositoryManager(AbstractRepositoryManager):
 
     def get_client_repository(self) -> ClientRepository:
         return ClientRepository(self._session)
+
+    def get_payment_repository(self) -> PaymentRepository:
+        return PaymentRepository(self._session)
 
 
 def orm_repository_manager_factory() -> OrmRepositoryManager:
