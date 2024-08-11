@@ -15,6 +15,7 @@ router = Router()
 @router.message(Command("add_client"))
 @checking_permissions
 async def add_client(message: types.Message):
+    # todo request to input name
     repository_manager = orm_repository_manager_factory()
     async with repository_manager:
         handler = AddClientCommandHandler(
