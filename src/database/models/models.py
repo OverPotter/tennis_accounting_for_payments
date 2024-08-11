@@ -1,7 +1,7 @@
-from datetime import datetime
+import datetime
 from typing import List
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.models.base import Base, BaseIDModel
@@ -50,9 +50,8 @@ class VisitModel(BaseIDModel):
 class PaymentModel(BaseIDModel):
     __tablename__ = "payments"
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
-    payment_date: Mapped[datetime] = mapped_column(DateTime)
+    payment_date: Mapped[datetime.date] = mapped_column(Date)
     amount: Mapped[float] = mapped_column(Float)
-
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="payments"
     )
