@@ -20,6 +20,6 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
             raise ValueError(f"Client not found: {client_name}")
 
         payment = await self._payment_repository.create(
-            client_id=client.id, amount=amount, payment_date=payment_date
+            client_id=client.id, amount=amount, payment_date=payment_date_str
         )
         return bool(payment)
