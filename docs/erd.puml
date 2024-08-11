@@ -1,11 +1,14 @@
 @startuml
 
+entity "admins" {
+    *tg_id : int
+}
+
 entity "users" as users {
     *id : int
     --
     name : varchar
 }
-
 
 entity "number_of_tennis_training_available" as tennis_balances {
     *user_id : int

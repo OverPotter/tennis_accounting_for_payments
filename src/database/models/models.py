@@ -55,3 +55,8 @@ class PaymentModel(BaseIDModel):
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="payments"
     )
+
+
+class AdminModel(Base):
+    __tablename__ = "admins"
+    tg_id: Mapped[int] = mapped_column(primary_key=True)

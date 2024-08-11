@@ -7,11 +7,13 @@ from src.services.create_client_service.repository import (
     RepositoryCreateClientService,
 )
 from src.services.logging_service.logging_service import logger_factory
+from src.utils.checking_permissions import checking_permissions
 
 router = Router()
 
 
 @router.message(Command("add_client"))
+@checking_permissions
 async def add_client(message: types.Message):
     repository_manager = orm_repository_manager_factory()
     async with repository_manager:

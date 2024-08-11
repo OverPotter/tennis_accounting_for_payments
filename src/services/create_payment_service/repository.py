@@ -13,7 +13,7 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
         self._payment_repository = payment_repository
 
     async def create_payment(
-        self, client_name: str, amount: float, payment_date_str: str
+        self, client_name: str, amount: float, payment_date: str
     ) -> bool:
         client = await self._client_repository.get(name=client_name)
         if not client:
