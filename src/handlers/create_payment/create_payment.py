@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
@@ -7,17 +6,17 @@ from src.services.create_payment_service.repository import (
 
 
 class CreatePaymentCommandHandler:
-    def __init__(self, service: RepositoryPaymentService):
-        self._service = service
+    def __init__(self, create_payment_service: RepositoryPaymentService):
+        self._create_payment_service = create_payment_service
 
     async def _validate_datetime(
-        self, client_name: str, amount: float, payment_date_str: str
-    ) -> Optional[bool]:
+        self, client_name: str, amount: float, payment_date: str
+    ) -> bool:
         try:
-            datetime.strptime(payment_date_str, "%Y.%m.%d").date()
+            datetime.strptime(payment_date, "%Y.%m.%d").date()
         except ValueError:
-            raise ValueError("Invalid date format. Expected YYYY-MM-DD.")
+            raise ValueError("Invalid date format. Expected YYYY.MM.DD.")
 
-        return await self._service.create_payment(
-            client_name, amount, payment_date_str
+        return await self._create_payment_service.create_payment(
+            client_name, amount, payment_date
         )
