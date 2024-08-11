@@ -1,5 +1,6 @@
 from src.database.repositories.payment_repository import PaymentRepository
 from src.database.repositories.user_repository import ClientRepository
+from src.exceptions.user_exception import UserDoesntExist
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
 
 
@@ -17,9 +18,9 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
     ) -> bool:
         client = await self._client_repository.get(name=client_name)
         if not client:
-            raise ValueError(f"Client not found: {client_name}")
+            raise UserDoesntExist(details=client_name)
 
         payment = await self._payment_repository.create(
-            client_id=client.id, amount=amount, payment_date=payment_date_str
+            client_id=client.id, amount=amount, payment_date=payment_date
         )
         return bool(payment)

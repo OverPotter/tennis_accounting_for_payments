@@ -7,7 +7,6 @@ from src.database.repositories.payment_repository import PaymentRepository
 from src.database.repositories.user_repository import ClientRepository
 
 
-
 class AbstractRepositoryManager(ABC):
 
     @abstractmethod
