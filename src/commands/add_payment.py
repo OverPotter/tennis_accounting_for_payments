@@ -1,23 +1,21 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 
+from src.constants_text import TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST
 from src.database.repositories.manager import orm_repository_manager_factory
-from src.facade.add_payments_facade import AddPaymentsCommandFacade
+from src.handlers.add_payments.add_payments import AddPaymentsCommandHandler
+from src.services.create_payment_service.repository import (
+    RepositoryPaymentService,
+)
 from src.services.logging_service.logging_service import logger_factory
 
 router = Router()
-logger = logger_factory()
-
-
-repository_manager = orm_repository_manager_factory()
-
-payments_commands = AddPaymentsCommandFacade(logger, repository_manager)
 
 
 @router.message(Command("add_payments"))
 async def add_payment(message: types.Message):
     await message.answer(
-        "Введите данные (формат: Имя Сумма Дата, дата в формате dd.mm.yyyy):",
+        TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST,
         reply_markup=types.ForceReply(selective=True),
     )
 
@@ -27,9 +25,15 @@ async def process_payment_data(message: types.Message):
     if (
         message.reply_to_message
         and message.reply_to_message.text
-        == "Введите данные (формат: Имя Сумма Дата, дата в формате dd.mm.yyyy):"
+        == TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST
     ):
-        data = message.text
-        payments = data.split("\n")
-
-        await payments_commands.process_payments(payments, message)
+        repository_manager = orm_repository_manager_factory()
+        async with repository_manager:
+            handler = AddPaymentsCommandHandler(
+                create_payment_service=RepositoryPaymentService(
+                    client_repository=repository_manager.get_client_repository(),
+                    payment_repository=repository_manager.get_payment_repository(),
+                ),
+                logger=logger_factory(),
+            )
+        await handler.handle(message=message)
