@@ -27,13 +27,9 @@ class AddPaymentsCommandHandler:
                     payment
                 )
 
-                is_payment_created = (
-                    await self._create_payment_service.create_payment(
-                        client_name, amount, payment_date
-                    )
-                )
-
-                if is_payment_created:
+                if await self._create_payment_service.create_payment(
+                    client_name, amount, payment_date
+                ):
                     await message.answer(
                         f"Данные для пользователя '{client_name}' сохранены."
                     )
