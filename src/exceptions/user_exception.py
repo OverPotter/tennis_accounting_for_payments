@@ -9,3 +9,7 @@ class UserAlreadyExist(UserException):
 
 class UserDoesntExist(UserException):
     pass
+
+
+class PaymentExist(UserException):
+    pass

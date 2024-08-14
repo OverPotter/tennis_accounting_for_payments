@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from src.exceptions.user_exception import PaymentExist
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
 )
 from src.services.logging_service.logging_service import Logger
 
 
-class CreatePaymentsCommandHandler:
+class AddPaymentsCommandHandler:
     def __init__(
         self,
         create_payment_service: RepositoryPaymentService,
@@ -31,6 +32,6 @@ class CreatePaymentsCommandHandler:
             return await self._create_payment_service.create_payment(
                 client_name, amount, payment_date
             )
-        except Exception as e:
+        except PaymentExist as e:
             self._logger.error(f"Failed to create payment: {e}")
             return False
