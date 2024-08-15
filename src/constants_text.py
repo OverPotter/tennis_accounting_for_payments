@@ -12,3 +12,5 @@ TEXT_OF_MESSAGE_FOR_ADD_CLIENT_REQUEST = (
 TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST = (
     "Введите данные формата: полное имя сумма дата (в формате DD.MM.YYYY):"
 )
+
+TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST = "Введите данные формата: полное имя фамилия дата и время  (в формате DD.MM.YYYY HH:MM) тип тренировки:"

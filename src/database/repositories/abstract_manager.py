@@ -5,6 +5,7 @@ from typing import Type
 from src.database.repositories.admin_repository import AdminRepository
 from src.database.repositories.payment_repository import PaymentRepository
 from src.database.repositories.user_repository import ClientRepository
+from src.database.repositories.visits_repository import VisitsRepository
 
 
 class AbstractRepositoryManager(ABC):
@@ -35,6 +36,9 @@ class AbstractRepositoryManager(ABC):
 
     @abstractmethod
     def get_payment_repository(self) -> PaymentRepository: ...
+
+    @abstractmethod
+    def get_visits_repository(self) -> VisitsRepository: ...
 
     @abstractmethod
     def get_admin_repository(self) -> AdminRepository: ...
