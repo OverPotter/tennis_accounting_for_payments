@@ -42,7 +42,7 @@ class AddClientCommandHandler:
 
     @staticmethod
     async def _validate_client_name(message: types.Message) -> str:
-        client_name = message.text[len("/add_client") :].strip()
+        client_name = message.text
         words = client_name.split()
 
         error_msg = None
