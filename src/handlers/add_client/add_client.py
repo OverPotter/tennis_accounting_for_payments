@@ -3,6 +3,9 @@ from aiogram import types
 from src.exceptions.entity_exceptions import EntityAlreadyExistException
 from src.services.create_client_service.abc import AbstractCreateClientService
 from src.services.logging_service.logging_service import Logger
+from src.utils.validators.validate_client_name import (
+    validate_and_extract_client_name,
+)
 
 
 class AddClientCommandHandler:
@@ -16,7 +19,11 @@ class AddClientCommandHandler:
 
     async def handle(self, message: types.Message):
         try:
-            client_name = await self._validate_client_name(message=message)
+            client_name_parts = message.text.split(" ", 1)
+
+            client_name = validate_and_extract_client_name(
+                parts=client_name_parts
+            )
 
             if client_name:
 
@@ -30,29 +37,14 @@ class AddClientCommandHandler:
 
                 else:
                     self._logger.debug("The client has not been created.")
-
-            else:
-                self._logger.error("Validation failed: invalid client name.")
+                    await message.answer(
+                        "Клиент не был добавлен. Сообщите администратору."
+                    )
 
         except ValueError as e:
             self._logger.error(f"Validation failed: {str(e)}")
+            await message.answer(f"Данные не валидны: {e}")
+
         except EntityAlreadyExistException as e:
             self._logger.error(f"User already exist: {e.details}")
             await message.answer("Такой пользователь уже существует.")
-
-    @staticmethod
-    async def _validate_client_name(message: types.Message) -> str:
-        client_name = message.text
-        words = client_name.split()
-
-        error_msg = None
-        if len(words) != 2:
-            error_msg = "Пожалуйста, укажите имя и фамилию в два слова."
-        elif not all(word.isalpha() for word in words):
-            error_msg = "Имя и фамилия должны содержать только буквы."
-
-        if error_msg:
-            await message.answer(error_msg)
-            raise ValueError(error_msg)
-
-        return client_name

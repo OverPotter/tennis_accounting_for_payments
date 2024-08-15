@@ -1,12 +1,16 @@
-import re
-from datetime import datetime
-
 from aiogram import types
 from sqlalchemy.exc import OperationalError
 
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
 from src.services.logging_service.logging_service import Logger
+from src.utils.validators.validate_amount import validate_and_extract_amount
+from src.utils.validators.validate_client_name import (
+    validate_and_extract_client_name,
+)
+from src.utils.validators.validate_payment_date import (
+    validate_and_extract_payment_date,
+)
 
 
 class AddPaymentsCommandHandler:
@@ -55,50 +59,16 @@ class AddPaymentsCommandHandler:
                     "Проблемы с работой базы данных. Сообщите администратору."
                 )
 
-    def _parse_payment_data(self, payment: str) -> tuple[str, float, str]:
-        parts = payment.split(" ", 3)
-        if len(parts) < 3:
+    @staticmethod
+    def _parse_payment_data(payment: str) -> tuple[str, float, str]:
+        payment_data_parts = payment.split(" ", 3)
+        if len(payment_data_parts) < 3:
             raise ValueError(f"Invalid number of payment data: {payment}")
 
-        client_name = self._validate_and_extract_client_name(parts)
-        amount = self._validate_and_extract_amount(parts)
-        payment_date = self._validate_and_extract_payment_date(parts)
+        client_name = validate_and_extract_client_name(parts=payment_data_parts)
+        amount = validate_and_extract_amount(parts=payment_data_parts)
+        payment_date = validate_and_extract_payment_date(
+            parts=payment_data_parts
+        )
 
         return client_name, amount, payment_date
-
-    @staticmethod
-    def _validate_and_extract_client_name(parts: list[str]) -> str:
-        name_parts = parts[:2]
-        name_pattern = re.compile(r"^[a-zA-Zа-яА-Я]+$")
-
-        for part in name_parts:
-            if not name_pattern.match(part):
-                raise ValueError(
-                    f"Invalid character(s) in client name part: {part}. Only letters from English or Russian alphabets are allowed."
-                )
-
-        return f"{parts[0]} {parts[1]}"
-
-    @staticmethod
-    def _validate_and_extract_amount(parts: list[str]) -> float:
-        try:
-            return float(parts[2])
-        except ValueError:
-            raise ValueError(
-                f"The amount format is incorrect. The amount must be a number: {parts[2]}."
-            )
-
-    @staticmethod
-    def _validate_and_extract_payment_date(parts: list[str]) -> str:
-        if len(parts) == 4 and parts[3].strip():
-            payment_date = parts[3].strip()
-            try:
-                return datetime.strptime(payment_date, "%d.%m.%Y").strftime(
-                    "%Y-%m-%d"
-                )
-            except ValueError:
-                raise ValueError(
-                    f"The date format is incorrect: {payment_date}. Use the DD.MM.YYYY format."
-                )
-        else:
-            return datetime.now().strftime("%Y-%m-%d")
