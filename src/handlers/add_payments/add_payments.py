@@ -4,7 +4,7 @@ from datetime import datetime
 from aiogram import types
 from sqlalchemy.exc import OperationalError
 
-from src.exceptions.user_exception import UserDoesntExist
+from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
 from src.services.logging_service.logging_service import Logger
 
@@ -37,12 +37,12 @@ class AddPaymentsCommandHandler:
                     await message.answer(
                         f"Ошибка при создании платежа для '{client_name}'. Сообщите администратору."
                     )
-            except UserDoesntExist as e:
+            except EntityDoesntExistException as e:
                 self._logger.error(
-                    f"Error: The user named {e.details} was not found."
+                    f"Error: The user named {e.value} was not found."
                 )
                 await message.answer(
-                    f"Ошибка: Пользователь с именем '{e.details}' не найден."
+                    f"Ошибка: Пользователь с именем '{e.value}' не найден."
                 )
 
             except ValueError as e:

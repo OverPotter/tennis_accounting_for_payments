@@ -1,5 +1,5 @@
 from src.database.repositories.user_repository import ClientRepository
-from src.exceptions.user_exception import UserAlreadyExist
+from src.exceptions.entity_exceptions import EntityAlreadyExistException
 from src.services.create_client_service.abc import AbstractCreateClientService
 
 
@@ -13,7 +13,11 @@ class RepositoryCreateClientService(AbstractCreateClientService):
     async def create_client(self, client_name: str) -> bool:
         is_user_exist = await self._client_repository.get(name=client_name)
         if is_user_exist:
-            raise UserAlreadyExist(details=f"{client_name}")
+            raise EntityAlreadyExistException(
+                key="name",
+                value=client_name,
+                entity_name="client",
+            )
 
         client = await self._client_repository.create(name=client_name)
 

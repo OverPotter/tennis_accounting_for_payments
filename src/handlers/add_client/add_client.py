@@ -1,6 +1,6 @@
 from aiogram import types
 
-from src.exceptions.user_exception import UserAlreadyExist
+from src.exceptions.entity_exceptions import EntityAlreadyExistException
 from src.services.create_client_service.abc import AbstractCreateClientService
 from src.services.logging_service.logging_service import Logger
 
@@ -36,7 +36,7 @@ class AddClientCommandHandler:
 
         except ValueError as e:
             self._logger.error(f"Validation failed: {str(e)}")
-        except UserAlreadyExist as e:
+        except EntityAlreadyExistException as e:
             self._logger.error(f"User already exist: {e.details}")
             await message.answer("Такой пользователь уже существует.")
 

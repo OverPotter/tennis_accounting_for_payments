@@ -1,6 +1,6 @@
 from src.database.repositories.payment_repository import PaymentRepository
 from src.database.repositories.user_repository import ClientRepository
-from src.exceptions.user_exception import UserDoesntExist
+from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
 
 
@@ -18,7 +18,11 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
     ) -> bool:
         client = await self._client_repository.get(name=client_name)
         if not client:
-            raise UserDoesntExist(details=client_name)
+            raise EntityDoesntExistException(
+                key="name",
+                value=client_name,
+                entity_name="client",
+            )
 
         payment = await self._payment_repository.create(
             client_id=client.id, amount=amount, payment_date=payment_date
