@@ -13,10 +13,8 @@ from src.services.create_client_service.repository import (
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
 )
-from src.services.logging_service.logging_service import logger_factory
 
 router = Router()
-logger = logger_factory()
 repository_manager = orm_repository_manager_factory()
 
 
@@ -42,7 +40,6 @@ async def handle_payment_command(message: types.Message):
                 client_repository=repository_manager.get_client_repository(),
                 payment_repository=repository_manager.get_payment_repository(),
             ),
-            logger=logger,
         )
         await handler.handle(message=message)
 
@@ -53,6 +50,5 @@ async def handle_client_command(message: types.Message):
             create_client_service=RepositoryCreateClientService(
                 client_repository=repository_manager.get_client_repository(),
             ),
-            logger=logger,
         )
         await handler.handle(message=message)
