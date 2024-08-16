@@ -1,23 +1,19 @@
 from aiogram import types
 
 from src.exceptions.entity_exceptions import EntityAlreadyExistException
+from src.handlers.base import BaseCommandHandler
 from src.services.create_client_service.abc import AbstractCreateClientService
-from src.services.logging_service.logging_service import Logger
 from src.utils.validators.validate_client_name import (
     validate_and_extract_client_name,
 )
 
 
-class AddClientCommandHandler:
-    def __init__(
-        self,
-        create_client_service: AbstractCreateClientService,
-        logger: Logger,
-    ):
+class AddClientCommandHandler(BaseCommandHandler):
+    def __init__(self, create_client_service: AbstractCreateClientService):
+        super().__init__()
         self._create_client_service = create_client_service
-        self._logger = logger
 
-    async def handle(self, message: types.Message):
+    async def handle(self, message: types.Message) -> None:
         try:
             client_name_parts = message.text.split(" ", 1)
 
