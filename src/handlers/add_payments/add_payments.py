@@ -2,8 +2,8 @@ from aiogram import types
 from sqlalchemy.exc import OperationalError
 
 from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.handlers.base import BaseCommandHandler
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
-from src.services.logging_service.logging_service import Logger
 from src.utils.validators.validate_amount import validate_and_extract_amount
 from src.utils.validators.validate_client_name import (
     validate_and_extract_client_name,
@@ -13,16 +13,15 @@ from src.utils.validators.validate_payment_date import (
 )
 
 
-class AddPaymentsCommandHandler:
+class AddPaymentsCommandHandler(BaseCommandHandler):
     def __init__(
         self,
         create_payment_service: AbstractCreatePaymentService,
-        logger: Logger,
     ):
+        super().__init__()
         self._create_payment_service = create_payment_service
-        self._logger = logger
 
-    async def handle(self, message: types.Message):
+    async def handle(self, message: types.Message) -> None:
         payments = message.text.split("\n")
 
         for payment in payments:
