@@ -1,6 +1,7 @@
 from src.database.repositories.user_repository import ClientRepository
 from src.database.repositories.visits_repository import VisitsRepository
 from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.schemas.enums.training_types import TrainingTypesEnum
 from src.services.create_visits_service.abc import AbstractCreateVisitsService
 
 
@@ -14,7 +15,10 @@ class RepositoryVisitsService(AbstractCreateVisitsService):
         self._visits_repository = visits_repository
 
     async def create_visits(
-        self, client_name: str, visit_datetime: str, training_type: str
+        self,
+        client_name: str,
+        visit_datetime: str,
+        training_type: TrainingTypesEnum,
     ) -> bool:
         client = await self._client_repository.get(name=client_name)
         if not client:

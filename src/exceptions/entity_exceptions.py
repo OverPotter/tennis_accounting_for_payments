@@ -17,7 +17,3 @@ class EntityAlreadyExistException(EntityException):
 
 class EntityDoesntExistException(EntityException):
     pass
-
-
-class VisitCreationException(EntityException):
-    pass
