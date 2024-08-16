@@ -2,9 +2,9 @@ from aiogram import types
 from sqlalchemy.exc import OperationalError
 
 from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.handlers.base import BaseCommandHandler
 from src.schemas.enums.training_types import TrainingTypesEnum
 from src.services.create_visits_service.abc import AbstractCreateVisitsService
-from src.services.logging_service.logging_service import Logger
 from src.utils.validators.validate_client_name import (
     validate_and_extract_client_name,
 )
@@ -16,14 +16,10 @@ from src.utils.validators.validate_visit_datetime import (
 )
 
 
-class AddVisitsCommandHandler:
-    def __init__(
-        self,
-        create_visits_service: AbstractCreateVisitsService,
-        logger: Logger,
-    ):
+class AddVisitsCommandHandler(BaseCommandHandler):
+    def __init__(self, create_visits_service: AbstractCreateVisitsService):
+        super().__init__()
         self._create_visits_service = create_visits_service
-        self._logger = logger
 
     async def handle(self, message: types.Message):
         visits = message.text.split("\n")
@@ -55,6 +51,10 @@ class AddVisitsCommandHandler:
                 await message.answer(
                     f"Ошибка: Пользователь с именем '{e.value}' не найден."
                 )
+            except ValueError as e:
+                self._logger.error(f"Invalid visits data: {e}")
+                await message.answer(f"Данные не валидны: {e}")
+
             except OperationalError as e:
                 self._logger.error(f"Ошибка при добавлении визита: {e}")
                 await message.answer(
