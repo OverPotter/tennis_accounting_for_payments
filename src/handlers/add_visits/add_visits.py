@@ -35,7 +35,7 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                     training_type,
                 ):
                     self._logger.info(
-                        f"Визит для клиента '{client_name}' успешно добавлен."
+                        f"Visit for client '{client_name}' has been successfully created."
                     )
                     await message.answer(
                         f"Визит для клиента '{client_name}' успешно добавлен."
@@ -56,15 +56,15 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                 await message.answer(f"Данные не валидны: {e}")
 
             except OperationalError as e:
-                self._logger.error(f"Ошибка при добавлении визита: {e}")
+                self._logger.error(f"Problems with database operations: {e}")
                 await message.answer(
-                    "Проблемы с добавлением визита. Сообщите администратору."
+                    "Проблемы с работой базы данных. Сообщите администратору."
                 )
 
     @staticmethod
     def _parse_visits_data(visits: str) -> tuple[str, str, TrainingTypesEnum]:
         visits_data_parts = visits.split(" ", 4)
-        if len(visits_data_parts) < 3:
+        if len(visits_data_parts) < 5:
             raise ValueError(f"Invalid number of payment data: {visits}")
 
         client_name = validate_and_extract_client_name(parts=visits_data_parts)

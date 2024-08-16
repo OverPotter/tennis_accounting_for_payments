@@ -27,7 +27,7 @@ class AddClientCommandHandler(BaseCommandHandler):
                     client_name=client_name
                 ):
                     self._logger.info(
-                        "The client has been successfully created."
+                        f"The client {client_name} has been successfully created."
                     )
                     await message.answer("Клиент успешно добавлен.")
 

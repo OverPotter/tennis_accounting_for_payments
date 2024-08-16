@@ -61,7 +61,7 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
     @staticmethod
     def _parse_payment_data(payment: str) -> tuple[str, float, str]:
         payment_data_parts = payment.split(" ", 3)
-        if len(payment_data_parts) < 3:
+        if len(payment_data_parts) < 4:
             raise ValueError(f"Invalid number of payment data: {payment}")
 
         client_name = validate_and_extract_client_name(parts=payment_data_parts)
