@@ -5,7 +5,7 @@ from src.schemas.enums.training_types import TrainingTypesEnum
 from src.services.create_visits_service.abc import AbstractCreateVisitsService
 
 
-class RepositoryVisitsService(AbstractCreateVisitsService):
+class RepositoryCreateVisitsService(AbstractCreateVisitsService):
     def __init__(
         self,
         client_repository: ClientRepository,
