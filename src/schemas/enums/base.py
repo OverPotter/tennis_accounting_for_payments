@@ -7,6 +7,4 @@ class BaseEnum(Enum):
         for member in cls:
             if member.value == value:
                 return member
-        raise ValueError(
-            f"No matching ResponseNumbers member for value: {value}"
-        )
+        raise ValueError(f"No matching {__class__} member for value: {value}")

@@ -4,6 +4,7 @@ from src.database.repositories.abstract_manager import AbstractRepositoryManager
 from src.database.repositories.admin_repository import AdminRepository
 from src.database.repositories.payment_repository import PaymentRepository
 from src.database.repositories.user_repository import ClientRepository
+from src.database.repositories.visits_repository import VisitsRepository
 from src.db_manager import session_factory
 
 
@@ -29,6 +30,9 @@ class OrmRepositoryManager(AbstractRepositoryManager):
 
     def get_admin_repository(self) -> AdminRepository:
         return AdminRepository(self._session)
+
+    def get_visits_repository(self) -> VisitsRepository:
+        return VisitsRepository(self._session)
 
 
 def orm_repository_manager_factory() -> OrmRepositoryManager:
