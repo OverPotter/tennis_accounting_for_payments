@@ -17,7 +17,7 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
         self._client_repository = client_repository
         self._visits_repository = visits_repository
 
-    async def create_visits(
+    async def create_visit(
         self,
         client_name: str,
         visit_datetime: str,

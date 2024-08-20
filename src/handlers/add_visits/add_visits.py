@@ -29,7 +29,7 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                     self._parse_visits_data(visit)
                 )
 
-                if await self._create_visits_service.create_visits(
+                if await self._create_visits_service.create_visit(
                     client_name,
                     visit_datetime,
                     training_type,
