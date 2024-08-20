@@ -15,7 +15,7 @@ from src.services.create_client_service.repository import (
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
 )
-from src.services.create_visits_service.repository import (
+from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
 )
 

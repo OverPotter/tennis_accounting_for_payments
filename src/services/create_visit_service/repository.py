@@ -5,7 +5,7 @@ from src.database.repositories.visits_repository import VisitsRepository
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.schemas.enums.training_types import TrainingTypesEnum
 from src.schemas.response.visit.base import VisitBaseResponse
-from src.services.create_visits_service.abc import AbstractCreateVisitsService
+from src.services.create_visit_service.abc import AbstractCreateVisitsService
 
 
 class RepositoryCreateVisitsService(AbstractCreateVisitsService):
