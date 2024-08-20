@@ -1,7 +1,10 @@
+from pydantic import TypeAdapter
+
 from src.database.repositories.user_repository import ClientRepository
 from src.database.repositories.visits_repository import VisitsRepository
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.schemas.enums.training_types import TrainingTypesEnum
+from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.create_visits_service.abc import AbstractCreateVisitsService
 
 
@@ -19,7 +22,7 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
         client_name: str,
         visit_datetime: str,
         training_type: TrainingTypesEnum,
-    ) -> bool:
+    ) -> VisitBaseResponse:
         client = await self._client_repository.get(name=client_name)
         if not client:
             raise EntityDoesntExistException(
@@ -28,9 +31,9 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
                 entity_name="client",
             )
 
-        visits = await self._visits_repository.create(
+        visit = await self._visits_repository.create(
             client_id=client.id,
             visit_datetime=visit_datetime,
             training_type=training_type,
         )
-        return bool(visits)
+        return TypeAdapter(VisitBaseResponse).validate_python(visit)
