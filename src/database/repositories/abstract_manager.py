@@ -4,6 +4,7 @@ from typing import Type
 
 from src.database.repositories.admin_repository import AdminRepository
 from src.database.repositories.payment_repository import PaymentRepository
+from src.database.repositories.remains_repository import RemainsRepository
 from src.database.repositories.user_repository import ClientRepository
 from src.database.repositories.visits_repository import VisitsRepository
 
@@ -42,3 +43,6 @@ class AbstractRepositoryManager(ABC):
 
     @abstractmethod
     def get_admin_repository(self) -> AdminRepository: ...
+
+    @abstractmethod
+    def get_remains_repository(self) -> RemainsRepository: ...
