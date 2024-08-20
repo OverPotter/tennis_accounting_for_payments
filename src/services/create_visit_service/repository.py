@@ -36,4 +36,4 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
             visit_datetime=visit_datetime,
             training_type=training_type,
         )
-        return TypeAdapter(VisitBaseResponse).validate_python(visit)
+        return TypeAdapter(VisitBaseResponse).validate_python(visit)  # type: ignore

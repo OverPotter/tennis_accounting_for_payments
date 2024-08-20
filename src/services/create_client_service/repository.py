@@ -24,4 +24,4 @@ class RepositoryCreateClientService(AbstractCreateClientService):
 
         client = await self._client_repository.create(name=client_name)
 
-        return TypeAdapter(ClientBaseResponse).validate_python(client)
+        return TypeAdapter(ClientBaseResponse).validate_python(client)  # type: ignore

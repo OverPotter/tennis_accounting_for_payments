@@ -4,20 +4,21 @@ from typing import AsyncGenerator
 from src.events.abc import AbstractSubject
 from src.events.base import BaseSubject
 from src.events.utils import observer
+from src.schemas.response.payment.base import PaymentBaseResponse
 
 
 @asynccontextmanager
-async def payments_creation_subject_context() -> (
-    AsyncGenerator[AbstractSubject[BaseLegalEntityResponse], None]
+async def payment_creation_subject_context() -> (
+    AsyncGenerator[AbstractSubject[PaymentBaseResponse], None]
 ):
-    legal_entity_creation_subject: AbstractSubject[BaseLegalEntityResponse] = (
+    payment_creation_subject: AbstractSubject[PaymentBaseResponse] = (
         BaseSubject()
     )
 
-    @observer(legal_entity_creation_subject)
-    def _(subject: AbstractSubject[BaseLegalEntityResponse]):
+    @observer(payment_creation_subject)
+    def _(subject: AbstractSubject[PaymentBaseResponse]):
         if subject.state is not None:
             ...
 
-    yield legal_entity_creation_subject
-    await legal_entity_creation_subject.notify()
+    yield payment_creation_subject
+    await payment_creation_subject.notify()
