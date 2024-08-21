@@ -2,16 +2,16 @@ from aiogram import types
 
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.handlers.base import BaseCommandHandler
-from src.services.create_remains_service.abc import AbstractCreateRemainsService
+from src.services.get_remains_service.abc import AbstractGetRemainsService
 from src.utils.validators.validate_client_name import (
     validate_and_extract_client_name,
 )
 
 
 class GetRemainsCommandHandler(BaseCommandHandler):
-    def __init__(self, create_remains_service: AbstractCreateRemainsService):
+    def __init__(self, get_remains_service: AbstractGetRemainsService):
         super().__init__()
-        self._create_remains_service = create_remains_service
+        self._get_remains_service = get_remains_service
 
     async def handle(self, message: types.Message) -> None:
         try:
@@ -23,7 +23,7 @@ class GetRemainsCommandHandler(BaseCommandHandler):
 
             if client_name:
                 number_of_trainings = (
-                    await self._create_remains_service.create_remains(
+                    await self._get_remains_service.get_client_remains(
                         client_name=client_name
                     )
                 )

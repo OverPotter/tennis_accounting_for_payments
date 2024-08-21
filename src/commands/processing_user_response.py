@@ -17,11 +17,11 @@ from src.services.create_client_service.repository import (
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
 )
-from src.services.create_remains_service.repository import (
-    RepositoryCreateRemainsService,
-)
 from src.services.create_visits_service.repository import (
     RepositoryCreateVisitsService,
+)
+from src.services.get_remains_service.repository import (
+    RepositoryGetClientRemainsService,
 )
 
 router = Router()
@@ -88,7 +88,7 @@ async def handle_visits_command(message: types.Message):
 async def handle_remains_command(message: types.Message):
     async with repository_manager:
         handler = GetRemainsCommandHandler(
-            create_remains_service=RepositoryCreateRemainsService(
+            get_remains_service=RepositoryGetClientRemainsService(
                 client_repository=repository_manager.get_client_repository(),
                 remains_repository=repository_manager.get_remains_repository(),
             ),
