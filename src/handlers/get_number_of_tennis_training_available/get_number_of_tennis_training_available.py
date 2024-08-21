@@ -29,7 +29,7 @@ class GetNumberOfTennisTrainingAvailableCommandHandler(BaseCommandHandler):
             )
 
             if client_name:
-                number_of_trainings = await self._get_number_of_tennis_training_available_service.get_number_of_tennis_training_available(
+                number_of_trainings = await self._get_number_of_tennis_training_available_service.get_client_number_of_tennis_training_available(
                     client_name=client_name
                 )
 

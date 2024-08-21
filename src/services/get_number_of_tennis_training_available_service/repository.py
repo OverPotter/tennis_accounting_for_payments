@@ -14,7 +14,7 @@ class RepositoryGetNumberOfTennisTrainingAvailableService(
     ):
         self._client_repository = client_repository
 
-    async def get_number_of_tennis_training_available(
+    async def get_client_number_of_tennis_training_available(
         self, client_name: str
     ) -> int:
         client = await self._client_repository.get_user_with_number_of_tennis_training_available(
@@ -27,4 +27,5 @@ class RepositoryGetNumberOfTennisTrainingAvailableService(
                 value=client_name,
                 entity_name="client",
             )
+
         return client
