@@ -7,6 +7,7 @@ from src.constants_text import (
     TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST,
 )
 from src.database.repositories.manager import orm_repository_manager_factory
+from src.events.payments.create import payment_creation_subject_context
 from src.handlers.add_client.add_client import AddClientCommandHandler
 from src.handlers.add_payments.add_payments import AddPaymentsCommandHandler
 from src.handlers.add_visits.add_visits import AddVisitsCommandHandler
@@ -19,7 +20,7 @@ from src.services.create_client_service.repository import (
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
 )
-from src.services.create_visits_service.repository import (
+from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
 )
 from src.services.get_number_of_tennis_training_available_service.repository import (
@@ -56,14 +57,16 @@ async def processing_user_response(message: types.Message):
 
 
 async def handle_payment_command(message: types.Message):
-    async with repository_manager:
-        handler = AddPaymentsCommandHandler(
-            create_payment_service=RepositoryPaymentService(
-                client_repository=repository_manager.get_client_repository(),
-                payment_repository=repository_manager.get_payment_repository(),
-            ),
-        )
-        await handler.handle(message=message)
+    async with payment_creation_subject_context() as payment_creation_subject:
+        async with repository_manager:
+            handler = AddPaymentsCommandHandler(
+                create_payment_service=RepositoryPaymentService(
+                    client_repository=repository_manager.get_client_repository(),
+                    payment_repository=repository_manager.get_payment_repository(),
+                    subject=payment_creation_subject,
+                ),
+            )
+            await handler.handle(message=message)
 
 
 async def handle_client_command(message: types.Message):

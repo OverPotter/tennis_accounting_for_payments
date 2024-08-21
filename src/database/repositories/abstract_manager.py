@@ -3,11 +3,11 @@ from inspect import Traceback
 from typing import Type
 
 from src.database.repositories.admin_repository import AdminRepository
+from src.database.repositories.client_repository import ClientRepository
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
 from src.database.repositories.payment_repository import PaymentRepository
-from src.database.repositories.user_repository import ClientRepository
 from src.database.repositories.visits_repository import VisitsRepository
 
 

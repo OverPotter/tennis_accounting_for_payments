@@ -85,7 +85,7 @@ class CreateExcelTableService(AbstractCreateTableService):
         ws.column_dimensions["C"].width = 15  # Quantity
         ws.column_dimensions["D"].width = 20  # Payment amount
         ws.column_dimensions["E"].width = 20  # Number of training sessions
-        ws.column_dimensions["F"].width = 15  # Date of payment
+        ws.column_dimensions["F"].width = 15  # Date of payments
 
         last_column_index = 6 + number_days_of_in_month + 1
         last_column_letter = ws.cell(
