@@ -16,6 +16,6 @@ TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST = (
 TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST = "Введите данные формата: полное имя фамилия дата и время  (в формате DD.MM.YYYY HH:MM) тип тренировки:"
 
 
-TEXT_OF_MESSAGE_FOR_GET_REMAINS_REQUEST = (
+TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST = (
     "Введите имя и фамилию клиента (в формтае Имя Фамилия):"
 )
