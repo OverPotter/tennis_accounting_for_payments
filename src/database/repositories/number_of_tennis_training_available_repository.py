@@ -1,3 +1,5 @@
+from typing import Callable
+
 from sqlalchemy import and_, select, update
 
 from src.database.models import NumberOfTennisTrainingAvailableModel
@@ -12,7 +14,7 @@ class NumberOfTennisTrainingAvailableRepository(
 
     async def update(
         self, client_id: int, training_type: TrainingTypesEnum, **kwargs
-    ) -> None:
+    ) -> Callable[[], int]:
         query = (
             update(NumberOfTennisTrainingAvailableModel)
             .where(
@@ -24,7 +26,8 @@ class NumberOfTennisTrainingAvailableRepository(
             )
             .values(**kwargs)
         )
-        await self._session.execute(query)
+        result = await self._session.execute(query)
+        return result.rowcount
 
     async def get_number_by_client_id_and_training_type(
         self, client_id: int, training_type: TrainingTypesEnum
