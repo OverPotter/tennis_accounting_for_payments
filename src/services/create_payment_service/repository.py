@@ -1,7 +1,7 @@
 from pydantic import TypeAdapter
 
+from src.database.repositories.client_repository import ClientRepository
 from src.database.repositories.payment_repository import PaymentRepository
-from src.database.repositories.user_repository import ClientRepository
 from src.events.abc import AbstractSubject
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.schemas.response.payment.base import PaymentBaseResponse
@@ -22,6 +22,7 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
     async def create_payment(
         self, client_name: str, amount: float, payment_date: str
     ) -> PaymentBaseResponse:
+
         client = await self._client_repository.get(name=client_name)
         if not client:
             raise EntityDoesntExistException(

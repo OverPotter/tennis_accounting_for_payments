@@ -1,6 +1,6 @@
 from pydantic import TypeAdapter
 
-from src.database.repositories.user_repository import ClientRepository
+from src.database.repositories.client_repository import ClientRepository
 from src.exceptions.entity_exceptions import EntityAlreadyExistException
 from src.schemas.response.client.base import ClientBaseResponse
 from src.services.create_client_service.abc import AbstractCreateClientService

@@ -13,8 +13,10 @@ class ClientModel(BaseIDModel):
     name: Mapped[str] = mapped_column(String(255))
 
     number_of_trainings_available: Mapped[
-        List["NumberOfTennisTrainingAvailable"]
-    ] = relationship("NumberOfTennisTrainingAvailable", back_populates="client")
+        List["NumberOfTennisTrainingAvailableModel"]
+    ] = relationship(
+        "NumberOfTennisTrainingAvailableModel", back_populates="client"
+    )
     visits: Mapped[List["VisitModel"]] = relationship(
         "VisitModel", back_populates="client"
     )
@@ -23,7 +25,7 @@ class ClientModel(BaseIDModel):
     )
 
 
-class NumberOfTennisTrainingAvailable(Base):
+class NumberOfTennisTrainingAvailableModel(Base):
     __tablename__ = "number_of_tennis_training_available"
     client_id: Mapped[int] = mapped_column(
         ForeignKey("clients.id"), primary_key=True
