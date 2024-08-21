@@ -34,8 +34,8 @@ async def payment_creation_subject_context() -> (
         if subject.state is not None:
             new_payment = subject.state
 
-            number_of_training, training_type = get_training_type_by_amount(
-                amount=new_payment.amount
+            number_of_training_for_price, training_type = (
+                get_training_type_by_amount(amount=new_payment.amount)
             )
 
             async with repository_manager:
@@ -50,6 +50,9 @@ async def payment_creation_subject_context() -> (
                 )
 
                 if result:
+                    number_of_training = (
+                        result.number_of_training + number_of_training_for_price
+                    )
                     await repository.update(
                         client_id=new_payment.client_id,
                         training_type=training_type,
@@ -66,7 +69,7 @@ async def payment_creation_subject_context() -> (
                     )
                     await service.create_number_of_tennis_training_available(
                         client_id=new_payment.client_id,
-                        number_of_training=number_of_training,
+                        number_of_training=number_of_training_for_price,
                         training_type=training_type,
                     )
                     logger.info(

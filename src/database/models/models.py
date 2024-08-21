@@ -1,7 +1,15 @@
 import datetime
 from typing import List
 
-from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import (
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    PrimaryKeyConstraint,
+    String,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.models.base import Base, BaseIDModel
@@ -27,15 +35,15 @@ class ClientModel(BaseIDModel):
 
 class NumberOfTennisTrainingAvailableModel(Base):
     __tablename__ = "number_of_tennis_training_available"
-    client_id: Mapped[int] = mapped_column(
-        ForeignKey("clients.id"), primary_key=True
-    )
+    client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
     number_of_training: Mapped[int] = mapped_column(Integer)
     training_type: Mapped[TrainingTypesEnum] = mapped_column(nullable=False)
 
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="number_of_trainings_available"
     )
+
+    __table_args__ = (PrimaryKeyConstraint("client_id", "training_type"),)
 
 
 class VisitModel(BaseIDModel):
