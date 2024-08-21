@@ -94,7 +94,6 @@ async def handle_number_of_tennis_training_available_command(
         handler = GetNumberOfTennisTrainingAvailableCommandHandler(
             get_number_of_tennis_training_available_service=RepositoryGetNumberOfTennisTrainingAvailableService(
                 client_repository=repository_manager.get_client_repository(),
-                number_of_tennis_training_available_repository=repository_manager.get_number_of_tennis_training_available_repository(),
             ),
         )
         await handler.handle(message=message)
