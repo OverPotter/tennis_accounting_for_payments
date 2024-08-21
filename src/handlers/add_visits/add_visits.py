@@ -4,7 +4,7 @@ from sqlalchemy.exc import OperationalError
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.handlers.base import BaseCommandHandler
 from src.schemas.enums.training_types import TrainingTypesEnum
-from src.services.create_visits_service.abc import AbstractCreateVisitsService
+from src.services.create_visit_service.abc import AbstractCreateVisitsService
 from src.utils.validators.validate_client_name import (
     validate_and_extract_client_name,
 )
@@ -29,7 +29,7 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                     self._parse_visits_data(visit)
                 )
 
-                if await self._create_visits_service.create_visits(
+                if await self._create_visits_service.create_visit(
                     client_name,
                     visit_datetime,
                     training_type,
