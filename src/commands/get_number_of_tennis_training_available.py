@@ -9,7 +9,7 @@ from src.utils.checking_permissions import checking_permissions
 router = Router()
 
 
-@router.message(Command("get_number_of_tennis_training_available"))
+@router.message(Command("get_number_of_tennis_training"))
 @checking_permissions
 async def get_number_of_tennis_training_available(message: types.Message):
     await message.answer(

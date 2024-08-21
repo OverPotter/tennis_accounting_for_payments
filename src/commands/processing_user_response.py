@@ -11,8 +11,8 @@ from src.events.payments.create import payment_creation_subject_context
 from src.handlers.add_client.add_client import AddClientCommandHandler
 from src.handlers.add_payments.add_payments import AddPaymentsCommandHandler
 from src.handlers.add_visits.add_visits import AddVisitsCommandHandler
-from src.handlers.get_number_of_tennis_training_available.get_number_of_tennis_training_available import (
-    GetNumberOfTennisTrainingAvailableCommandHandler,
+from src.handlers.get_client_number_of_tennis_training_available.get_client_number_of_tennis_training_available import (
+    GetClientNumberOfTennisTrainingAvailableCommandHandler,
 )
 from src.services.create_client_service.repository import (
     RepositoryCreateClientService,
@@ -94,7 +94,7 @@ async def handle_number_of_tennis_training_available_command(
     message: types.Message,
 ):
     async with repository_manager:
-        handler = GetNumberOfTennisTrainingAvailableCommandHandler(
+        handler = GetClientNumberOfTennisTrainingAvailableCommandHandler(
             get_number_of_tennis_training_available_service=RepositoryGetNumberOfTennisTrainingAvailableService(
                 client_repository=repository_manager.get_client_repository(),
             ),

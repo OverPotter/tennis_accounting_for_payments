@@ -18,5 +18,4 @@ class ClientRepository(AbstractRepository[ClientModel]):
         )
 
         result = await self._session.execute(query)
-
-        return result.one_or_none()
+        return result.unique().scalar_one_or_none()
