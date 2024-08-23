@@ -19,3 +19,13 @@ class ClientRepository(AbstractRepository[ClientModel]):
 
         result = await self._session.execute(query)
         return result.unique().scalar_one_or_none()
+
+    async def get_user_monthly_visits(self, client_name: str) -> _model | None:
+        query = (
+            select(ClientModel)
+            .options(joinedload(ClientModel.visits))
+            .filter_by(name=client_name)
+        )
+
+        result = await self._session.execute(query)
+        return result.unique().scalar_one_or_none()

@@ -3,6 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.repositories.abstract_manager import AbstractRepositoryManager
 from src.database.repositories.admin_repository import AdminRepository
 from src.database.repositories.client_repository import ClientRepository
+from src.database.repositories.monthly_visits_repository import (
+    MonthlyVisitsRepository,
+)
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
@@ -41,6 +44,9 @@ class OrmRepositoryManager(AbstractRepositoryManager):
         self,
     ) -> NumberOfTennisTrainingAvailableRepository:
         return NumberOfTennisTrainingAvailableRepository(self._session)
+
+    def get_monthly_visits_repository(self) -> MonthlyVisitsRepository:
+        return MonthlyVisitsRepository(self._session)
 
 
 def orm_repository_manager_factory() -> OrmRepositoryManager:
