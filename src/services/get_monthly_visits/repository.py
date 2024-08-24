@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from src.database.repositories.client_repository import ClientRepository
 from src.exceptions.entity_exceptions import EntityDoesntExistException
@@ -30,8 +30,8 @@ class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
                 entity_name="client",
             )
 
-        current_year = datetime.now().year
-        current_month = datetime.now().month
+        current_date = datetime.now()
+        three_months_ago = current_date - timedelta(days=90)
 
         monthly_visits = [
             VisitBaseResponse(
@@ -40,8 +40,7 @@ class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
                 training_type=visit.training_type,
             )
             for visit in client.visits
-            if visit.visit_datetime.year == current_year
-            and visit.visit_datetime.month == current_month
+            if three_months_ago <= visit.visit_datetime <= current_date
         ]
 
         return ClientWithMonthlyVisitsResponse(
