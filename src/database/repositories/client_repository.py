@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel
+from src.database.models.models import ClientModel, VisitModel
 from src.database.repositories.absctract_repository import AbstractRepository
 
 
@@ -19,3 +21,27 @@ class ClientRepository(AbstractRepository[ClientModel]):
 
         result = await self._session.execute(query)
         return result.unique().scalar_one_or_none()
+
+    async def get_user_monthly_visits(self, client_name: str) -> _model | None:
+        three_months_ago = datetime.now() - timedelta(days=90)
+
+        query = (
+            select(ClientModel)
+            .options(joinedload(ClientModel.visits))
+            .filter_by(name=client_name)
+            .join(ClientModel.visits)
+            .filter(VisitModel.visit_datetime >= three_months_ago)
+        )
+
+        result = await self._session.execute(query)
+        client = result.unique().scalar_one_or_none()
+
+        if client:
+            client.visits = [
+                visit
+                for visit in client.visits
+                if visit.visit_datetime >= three_months_ago
+            ]
+            return client
+        else:
+            return None
