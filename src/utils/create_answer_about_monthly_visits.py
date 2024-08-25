@@ -1,4 +1,4 @@
-from src.schemas.response.visit.monthly_visits import (
+from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
 
@@ -8,7 +8,7 @@ def create_answer_about_monthly_visits(
 ) -> str:
     visits_info = "".join(
         f"{visit.visit_datetime.strftime('%d.%m.%Y')}: {visit.training_type.value}\n"
-        for visit in data.monthly_visits
+        for visit in data.visits
     )
 
-    return f"Клиент {data.name} был на тренировках:\n{visits_info}"
+    return f"Клиент {data.name} был на тренировках за последние 3 месяца:\n{visits_info}"

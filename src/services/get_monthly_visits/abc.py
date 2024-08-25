@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.schemas.response.visit.monthly_visits import (
+from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
 
