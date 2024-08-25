@@ -3,4 +3,4 @@ from src.schemas.response.visit.base import VisitBaseResponse
 
 
 class ClientWithMonthlyVisitsResponse(ClientBaseResponse):
-    monthly_visits: list[VisitBaseResponse]
+    visits: list[VisitBaseResponse]
