@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel, VisitModel
+from src.database.models.models import ClientModel, PaymentModel, VisitModel
 from src.database.repositories.absctract_repository import AbstractRepository
 
 
@@ -41,6 +41,32 @@ class ClientRepository(AbstractRepository[ClientModel]):
                 visit
                 for visit in client.visits
                 if visit.visit_datetime >= three_months_ago
+            ]
+            return client
+        else:
+            return None
+
+    async def get_user_monthly_payments(
+        self, client_name: str
+    ) -> _model | None:
+        three_months_ago = (datetime.now() - timedelta(days=90)).date()
+
+        query = (
+            select(ClientModel)
+            .options(joinedload(ClientModel.payments))
+            .filter_by(name=client_name)
+            .join(ClientModel.payments)
+            .filter(PaymentModel.payment_date >= three_months_ago)
+        )
+
+        result = await self._session.execute(query)
+        client = result.unique().scalar_one_or_none()
+
+        if client:
+            client.payments = [
+                payment
+                for payment in client.payments
+                if payment.payment_date >= three_months_ago
             ]
             return client
         else:
