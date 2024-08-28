@@ -1,7 +1,8 @@
-from pydantic import TypeAdapter
-
 from src.database.repositories.client_repository import ClientRepository
 from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.schemas.enums.training_types import (
+    training_type_str_attribute_to_value,
+)
 from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
@@ -33,10 +34,16 @@ class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
             )
 
         monthly_visits = [
-            TypeAdapter(VisitBaseResponse).validate_python(visit)
-            for visit in client.visits
+            VisitBaseResponse(
+                client_id=row[-1],
+                visit_datetime=row[3],
+                training_type=training_type_str_attribute_to_value.get(
+                    row[4], None
+                ),
+            )
+            for row in client
         ]
 
         return ClientWithMonthlyVisitsResponse(
-            name=client.name, visits=monthly_visits
+            name=client_name, visits=monthly_visits
         )

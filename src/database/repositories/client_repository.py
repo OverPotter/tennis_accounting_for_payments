@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
+from typing import Any, Sequence
 
-from sqlalchemy import func, select
+from sqlalchemy import Row, select, text
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel, VisitModel
+from src.database.models.models import ClientModel
 from src.database.repositories.absctract_repository import AbstractRepository
 
 
@@ -22,17 +22,26 @@ class ClientRepository(AbstractRepository[ClientModel]):
         result = await self._session.execute(query)
         return result.unique().scalar_one_or_none()
 
-    async def get_user_monthly_visits(self, client_name: str) -> _model | None:
-        three_months_ago = datetime.now() - timedelta(days=90)
+    async def get_user_monthly_visits(
+        self, client_name: str
+    ) -> Sequence[Row[tuple[Any, ...]]]:
+        # query = (
+        #     select(ClientModel).options(selectinload(ClientModel.visits))
+        #     .filter(
+        #         ClientModel.name == client_name,
+        #         VisitModel.visit_datetime >= datetime.now() - timedelta(days=90)
+        #     ))
 
-        query = (
-            select(ClientModel)
-            .options(joinedload(ClientModel.visits))
-            .where(ClientModel.name == client_name)
-            .join(VisitModel)
-            .where(func.date(VisitModel.visit_datetime) >= three_months_ago)
-            .order_by(VisitModel.visit_datetime.desc())
+        query = text(
+            """
+            select * from clients
+            join visits on clients.id = visits.client_id
+            where visits.visit_datetime >= NOW() - INTERVAL 3 MONTH AND clients.name = :client_name
+            order by visits.visit_datetime DESC;
+        """
         )
 
-        result = await self._session.execute(query)
-        return result.unique().scalar_one_or_none()
+        result = await self._session.execute(
+            query, {"client_name": client_name}
+        )
+        return result.fetchall()
