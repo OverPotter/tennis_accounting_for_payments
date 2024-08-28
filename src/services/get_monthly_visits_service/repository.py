@@ -1,10 +1,15 @@
 from src.database.repositories.client_repository import ClientRepository
 from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.schemas.enums.training_types import (
+    training_type_str_attribute_to_value,
+)
 from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
 from src.schemas.response.visit.base import VisitBaseResponse
-from src.services.get_monthly_visits.abc import AbstractGetMonthlyVisitsService
+from src.services.get_monthly_visits_service.abc import (
+    AbstractGetMonthlyVisitsService,
+)
 
 
 class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
@@ -30,13 +35,15 @@ class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
 
         monthly_visits = [
             VisitBaseResponse(
-                client_id=visit.client_id,
-                visit_datetime=visit.visit_datetime,
-                training_type=visit.training_type,
+                client_id=row[-1],
+                visit_datetime=row[3],
+                training_type=training_type_str_attribute_to_value.get(
+                    row[4], None
+                ),
             )
-            for visit in client.visits
+            for row in client
         ]
 
         return ClientWithMonthlyVisitsResponse(
-            name=client.name, visits=monthly_visits
+            name=client_name, visits=monthly_visits
         )
