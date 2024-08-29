@@ -22,11 +22,11 @@ class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
     async def get_monthly_visits(
         self, client_name: str
     ) -> ClientWithMonthlyVisitsResponse:
-        client = await self._client_repository.get_user_monthly_visits(
+        client_visits = await self._client_repository.get_user_monthly_visits(
             client_name=client_name
         )
 
-        if not client:
+        if not client_visits:
             raise EntityDoesntExistException(
                 key="name",
                 value=client_name,
@@ -41,7 +41,7 @@ class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
                     row[4], None
                 ),
             )
-            for row in client
+            for row in client_visits
         ]
 
         return ClientWithMonthlyVisitsResponse(

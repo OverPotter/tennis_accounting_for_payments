@@ -4,6 +4,7 @@ from src.constants_text import (
     TEXT_OF_MESSAGE_FOR_ADD_CLIENT_REQUEST,
     TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST,
     TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST,
+    TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST,
     TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST,
     TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST,
 )
@@ -16,6 +17,9 @@ from src.handlers.add_visits.add_visits import AddVisitsCommandHandler
 from src.handlers.get_client_number_of_tennis_training_available.get_client_number_of_tennis_training_available import (
     GetClientNumberOfTennisTrainingAvailableCommandHandler,
 )
+from src.handlers.get_monthly_payments.get_monthly_payments import (
+    GetMonthlyPaymentsCommandHandler,
+)
 from src.handlers.get_monthly_visits.get_monthly_visits import (
     GetMonthlyVisitsCommandHandler,
 )
@@ -27,6 +31,9 @@ from src.services.create_payment_service.repository import (
 )
 from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
+)
+from src.services.get_monthly_payments_service.repository import (
+    RepositoryGetMonthlyPaymentsService,
 )
 from src.services.get_monthly_visits_service.repository import (
     RepositoryGetMonthlyVisitsService,
@@ -67,6 +74,11 @@ async def processing_user_response(message: types.Message):
             == TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST
         ):
             await handle_number_of_tennis_training_available_command(message)
+        elif (
+            message.reply_to_message.text
+            == TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST
+        ):
+            await handle_monthly_payments_command(message)
 
 
 async def handle_payment_command(message: types.Message):
@@ -123,6 +135,18 @@ async def handle_monthly_visits_command(
     async with repository_manager:
         handler = GetMonthlyVisitsCommandHandler(
             get_monthly_visits_service=RepositoryGetMonthlyVisitsService(
+                client_repository=repository_manager.get_client_repository(),
+            ),
+        )
+        await handler.handle(message=message)
+
+
+async def handle_monthly_payments_command(
+    message: types.Message,
+):
+    async with repository_manager:
+        handler = GetMonthlyPaymentsCommandHandler(
+            get_monthly_payments_service=RepositoryGetMonthlyPaymentsService(
                 client_repository=repository_manager.get_client_repository(),
             ),
         )
