@@ -32,10 +32,7 @@ from src.services.create_payment_service.repository import (
 from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
 )
-from src.services.get_monthly_payments.repository import (
-    RepositoryGetMonthlyPaymentsService,
-)
-from src.services.get_monthly_visits.repository import (
+from src.services.get_monthly_visits_service.repository import (
     RepositoryGetMonthlyVisitsService,
 )
 from src.services.get_number_of_tennis_training_available_service.repository import (
