@@ -19,11 +19,13 @@ class RepositoryGetMonthlyPaymentsService(AbstractGetMonthlyPaymentsService):
     async def get_monthly_payments(
         self, client_name: str
     ) -> ClientWithMonthlyPaymentsResponse:
-        client = await self._client_repository.get_user_monthly_payments(
-            client_name=client_name
+        client_payments = (
+            await self._client_repository.get_user_monthly_payments(
+                client_name=client_name
+            )
         )
 
-        if not client:
+        if not client_payments:
             raise EntityDoesntExistException(
                 key="name",
                 value=client_name,
@@ -32,13 +34,13 @@ class RepositoryGetMonthlyPaymentsService(AbstractGetMonthlyPaymentsService):
 
         monthly_payments = [
             PaymentBaseResponse(
-                client_id=payment.client_id,
-                payment_date=payment.payment_date,
-                amount=payment.amount,
+                client_id=row[0],
+                payment_date=row[1],
+                amount=row[2],
             )
-            for payment in client.payments
+            for row in client_payments
         ]
 
         return ClientWithMonthlyPaymentsResponse(
-            name=client.name, payments=monthly_payments
+            name=client_name, payments=monthly_payments
         )

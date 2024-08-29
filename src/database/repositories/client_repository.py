@@ -3,7 +3,7 @@ from typing import Any, Sequence
 from sqlalchemy import Row, select, text
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel, PaymentModel
+from src.database.models.models import ClientModel
 from src.database.repositories.absctract_repository import AbstractRepository
 
 
@@ -41,26 +41,19 @@ class ClientRepository(AbstractRepository[ClientModel]):
 
     async def get_user_monthly_payments(
         self, client_name: str
-    ) -> _model | None:
-        three_months_ago = (datetime.now() - timedelta(days=90)).date()
-
-        query = (
-            select(ClientModel)
-            .options(joinedload(ClientModel.payments))
-            .filter_by(name=client_name)
-            .join(ClientModel.payments)
-            .filter(PaymentModel.payment_date >= three_months_ago)
+    ) -> Sequence[Row[tuple[Any, ...]]]:
+        query = text(
+            """
+            select payments.client_id, payments.payment_date, payments.amount
+            from clients
+            join payments on clients.id = payments.client_id
+            where payments.payment_date >= NOW() - INTERVAL 3 MONTH 
+            AND clients.name = :client_name
+            order by payments.payment_date DESC;
+            """
         )
 
-        result = await self._session.execute(query)
-        client = result.unique().scalar_one_or_none()
-
-        if client:
-            client.payments = [
-                payment
-                for payment in client.payments
-                if payment.payment_date >= three_months_ago
-            ]
-            return client
-        else:
-            return None
+        result = await self._session.execute(
+            query, {"client_name": client_name}
+        )
+        return result.fetchall()
