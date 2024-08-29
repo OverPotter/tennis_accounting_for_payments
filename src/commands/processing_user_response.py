@@ -32,7 +32,7 @@ from src.services.create_payment_service.repository import (
 from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
 )
-from src.services.get_monthly_payments.repository import (
+from src.services.get_monthly_payments_service.repository import (
     RepositoryGetMonthlyPaymentsService,
 )
 from src.services.get_monthly_visits_service.repository import (

@@ -2,7 +2,7 @@ from aiogram import types
 
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.handlers.base import BaseCommandHandler
-from src.services.get_monthly_payments.abc import (
+from src.services.get_monthly_payments_service.abc import (
     AbstractGetMonthlyPaymentsService,
 )
 from src.utils.create_answer_about_monthly_payments import (

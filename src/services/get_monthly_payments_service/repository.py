@@ -4,7 +4,7 @@ from src.schemas.response.client.monthly_payments import (
     ClientWithMonthlyPaymentsResponse,
 )
 from src.schemas.response.payment.base import PaymentBaseResponse
-from src.services.get_monthly_payments.abc import (
+from src.services.get_monthly_payments_service.abc import (
     AbstractGetMonthlyPaymentsService,
 )
 
