@@ -5,6 +5,7 @@ from datetime import datetime
 from babel.dates import format_date
 
 
+# todo: think about SRP
 def get_number_of_days_in_month() -> tuple[int, str, int]:
     current_time = datetime.now()
     current_year = current_time.year
