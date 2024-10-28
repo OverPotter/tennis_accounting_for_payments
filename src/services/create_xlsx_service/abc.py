@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 
-class AbstractCreateTableService(ABC):
-    @staticmethod
+class AbstractCreateEmptyTableService(ABC):
     @abstractmethod
-    async def create_xlsx_table() -> None: ...
+    def create_xlsx_table(self) -> None: ...
