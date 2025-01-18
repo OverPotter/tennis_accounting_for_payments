@@ -9,7 +9,9 @@ from src.constants import (
     XLSX_LAST_SUB_HEADER,
     XLSX_SUB_HEADERS,
 )
-from src.services.create_xlsx_service.abc import AbstractCreateEmptyTableService
+from src.services.create_empty_xlsx_service.abc import (
+    AbstractCreateEmptyTableService,
+)
 from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
 
 
@@ -28,7 +30,7 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
         )
 
     # todo: async
-    def create_xlsx_table(self):
+    def create_xlsx_table(self) -> str:
         number_days_of_in_month, current_month_name, current_year = (
             get_number_of_days_in_month()
         )
@@ -43,6 +45,7 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
 
         filename = f"{TMP_DIR}/{XLSX_FILE_NAME}_{current_month_name}_{current_year}.xlsx"
         wb.save(filename)
+        return filename
 
     def _create_headers(self, ws, current_month_name, number_days_of_in_month):
         ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=6)
