@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pip install poetry
+          pip install poetry --no-root
           poetry config virtualenvs.create false
           poetry install --with lint
 
