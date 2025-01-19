@@ -8,15 +8,13 @@ services:
     container_name: tennis_telegram_bot
     env_file:
       - ./docker/backend/.env
-    restart: always
     depends_on:
-      - mariadb
+      - postgresql
 
-  mariadb:
-    image: mariadb:10.6
-    container_name: tennis_mariadb
+  postgresql:
+    image: postgres
+    container_name: tennis_telegram_db
     ports:
-      - "3306:3306"
+      - "5432:5432"
     env_file:
-      - ./docker/mariadb/.env
-    restart: always
+      - ./docker/postgresql/.env
