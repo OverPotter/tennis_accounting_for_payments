@@ -1,2 +1,2 @@
 [phases]
-start = "python src/tg_main.py"
+start = ["python", "src/tg_main.py"]
