@@ -7,11 +7,13 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    MD_USER: str
-    MD_PASS: str
-    MD_HOST: str
-    MD_PORT: str
-    MD_DB_NAME: str
+    PG_HOST: str
+    PG_USER: str
+    PG_PASS: str
+    PG_PORT: str
+    PG_DB_NAME: str
+
+    DB_DRIVER: str
 
     REQUEST_TIMEOUT: int = 60
     DEBUG: bool = False
@@ -19,7 +21,7 @@ class Settings(BaseSettings):
     API_TOKEN: str
 
     def get_engine_link(self) -> str:
-        return f"mysql+aiomysql://{self.MD_USER}:{self.MD_PASS}@{self.MD_HOST}:{self.MD_PORT}/{self.MD_DB_NAME}"
+        return f"{self.DB_DRIVER}://{self.PG_USER}:{self.PG_PASS}@{self.PG_HOST}:{self.PG_PORT}/{self.PG_DB_NAME}"
 
     model_config = SettingsConfigDict(extra="ignore")
 

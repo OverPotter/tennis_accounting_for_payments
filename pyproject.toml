@@ -15,9 +15,8 @@ aiogram = "^3.10.0"
 alembic = "^1.13.2"
 python-dotenv = "^1.0.1"
 pydantic-settings = "^2.4.0"
-aiomysql = "^0.2.0"
-pymysql = "^1.1.1"
 loguru = "^0.7.2"
+asyncpg = "^0.30.0"
 
 
 [tool.poetry.group.lint.dependencies]
