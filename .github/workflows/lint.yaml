@@ -28,9 +28,9 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pip install poetry --no-root
+          pip install poetry
           poetry config virtualenvs.create false
-          poetry install --with lint
+          poetry install --with lint  --no-root
 
       - name: Run ${{ matrix.linter }}
         run: |
