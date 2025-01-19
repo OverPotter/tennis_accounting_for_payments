@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  bot:
+    build:
+      dockerfile: system/Dockerfile
+      context: .
+    container_name: tennis_telegram_bot
+    env_file:
+      - ./docker/backend/.env
+    depends_on:
+      - postgresql
+
+  postgresql:
+    image: postgres
+    container_name: tennis_telegram_db
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./docker/postgresql/.env
