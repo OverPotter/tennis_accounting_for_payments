@@ -10,8 +10,10 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install
 
+COPY --chmod=777 system/entrypoint.sh /usr/local/bin/entrypoint
+
 COPY src ./src
 
 COPY alembic.ini ./alembic.ini
 
-CMD ["python", "src/tg_main.py"]
+ENTRYPOINT ["entrypoint"]

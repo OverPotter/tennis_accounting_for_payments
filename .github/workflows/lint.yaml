@@ -1,0 +1,43 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        linter: [black, isort, ruff]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install --with lint  --no-root
+
+      - name: Run ${{ matrix.linter }}
+        run: |
+          if [ "${{ matrix.linter }}" == "black" ]; then
+            black --check src
+          elif [ "${{ matrix.linter }}" == "isort" ]; then
+            isort --check src
+          elif [ "${{ matrix.linter }}" == "ruff" ]; then
+            ruff check src
+          fi
