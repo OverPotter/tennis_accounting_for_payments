@@ -18,7 +18,7 @@ setup:
 up:
 	docker compose up --remove-orphans --build \
 		bot \
-		mariadb
+		postgresql
 
 db_downgrade:
 	alembic downgrade -1
