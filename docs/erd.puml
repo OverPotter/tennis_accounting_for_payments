@@ -4,37 +4,37 @@ entity "admins" {
     *tg_id : int
 }
 
-entity "users" as users {
+entity "clients" as users {
     *id : int
     --
-    name : varchar
+    name : varchar(255)
 }
 
 entity "number_of_tennis_training_available" as tennis_balances {
-    *user_id : int
-    *training_type_id : int
+    *client_id : int
+    *training_type : TrainingTypesEnum
     --
     number_of_training : int
 }
 
 entity "visits" as visits {
     *id : int
-    *user_id : int
-    *training_type_id : int
+    *client_id : int
     --
     visit_datetime : datetime
+    training_type : TrainingTypesEnum
 }
 
 entity "payments" as payments {
     *id : int
-    *user_id : int
+    *client_id : int
     --
-    payment_date : datetime
+    payment_date : date
     amount : float
 }
 
-users ||--o{ tennis_balances
-users ||--o{ visits
-users ||--o{ payments
+users ||--o{ tennis_balances : "number_of_trainings_available"
+users ||--o{ visits : "visits"
+users ||--o{ payments : "payments"
 
 @enduml
