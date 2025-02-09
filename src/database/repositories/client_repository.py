@@ -22,7 +22,7 @@ class ClientRepository(AbstractRepository[ClientModel]):
         result = await self._session.execute(query)
         return result.unique().scalar_one_or_none()
 
-    async def get_user_monthly_visits(
+    async def get_client_visits_in_3_months(
         self, client_name: str
     ) -> Sequence[Row[tuple[ClientModel, VisitModel]]]:
         query = (
@@ -42,7 +42,7 @@ class ClientRepository(AbstractRepository[ClientModel]):
         return result.fetchall()
 
     # todo: DRY
-    async def get_user_monthly_payments(
+    async def get_client_payments_in_3_months(
         self, client_name: str
     ) -> Sequence[Row[tuple[ClientModel, PaymentModel]]]:
         query = (

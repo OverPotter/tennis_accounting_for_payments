@@ -32,11 +32,11 @@ from src.services.create_payment_service.repository import (
 from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
 )
-from src.services.get_monthly_payments_service.repository import (
+from src.services.get_client_payments_in_some_months_service.repository import (
     RepositoryGetMonthlyPaymentsService,
 )
-from src.services.get_monthly_visits_service.repository import (
-    RepositoryGetMonthlyVisitsService,
+from src.services.get_client_visits_in_some_months_service.repository import (
+    RepositoryGetClientVisitsInSomeMonthsService,
 )
 from src.services.get_number_of_tennis_training_available_service.repository import (
     RepositoryGetNumberOfTennisTrainingAvailableService,
@@ -134,7 +134,7 @@ async def handle_monthly_visits_command(
 ):
     async with repository_manager:
         handler = GetMonthlyVisitsCommandHandler(
-            get_monthly_visits_service=RepositoryGetMonthlyVisitsService(
+            get_monthly_visits_service=RepositoryGetClientVisitsInSomeMonthsService(
                 client_repository=repository_manager.get_client_repository(),
             ),
         )

@@ -5,8 +5,8 @@ from src.schemas.response.client.monthly_visits import (
 )
 
 
-class AbstractGetMonthlyVisitsService(ABC):
+class AbstractGetClientVisitsInSomeMonthsService(ABC):
     @abstractmethod
-    async def get_monthly_visits(
+    async def get_client_visits_in_3_months(
         self, client_name: str
     ) -> ClientWithMonthlyVisitsResponse: ...

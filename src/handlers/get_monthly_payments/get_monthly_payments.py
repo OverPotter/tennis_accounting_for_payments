@@ -2,8 +2,8 @@ from aiogram import types
 
 from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.handlers.base import BaseCommandHandler
-from src.services.get_monthly_payments_service.abc import (
-    AbstractGetMonthlyPaymentsService,
+from src.services.get_client_payments_in_some_months_service.abc import (
+    AbstractGetClientPaymentsInSomeMonthsService,
 )
 from src.utils.create_answer_about_monthly_payments import (
     create_answer_about_monthly_payments,
@@ -16,7 +16,7 @@ from src.utils.validators.validate_client_name import (
 class GetMonthlyPaymentsCommandHandler(BaseCommandHandler):
     def __init__(
         self,
-        get_monthly_payments_service: AbstractGetMonthlyPaymentsService,
+        get_monthly_payments_service: AbstractGetClientPaymentsInSomeMonthsService,
     ):
         super().__init__()
         self._get_monthly_payments_service = get_monthly_payments_service
@@ -31,7 +31,7 @@ class GetMonthlyPaymentsCommandHandler(BaseCommandHandler):
 
             if client_name:
 
-                client_with_monthly_payments = await self._get_monthly_payments_service.get_monthly_payments(
+                client_with_monthly_payments = await self._get_monthly_payments_service.get_client_payments_in_3_months(
                     client_name=client_name
                 )
 

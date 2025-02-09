@@ -4,23 +4,27 @@ from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
 from src.schemas.response.visit.base import VisitBaseResponse
-from src.services.get_monthly_visits_service.abc import (
-    AbstractGetMonthlyVisitsService,
+from src.services.get_client_visits_in_some_months_service.abc import (
+    AbstractGetClientVisitsInSomeMonthsService,
 )
 
 
-class RepositoryGetMonthlyVisitsService(AbstractGetMonthlyVisitsService):
+class RepositoryGetClientVisitsInSomeMonthsService(
+    AbstractGetClientVisitsInSomeMonthsService
+):
     def __init__(
         self,
         client_repository: ClientRepository,
     ):
         self._client_repository = client_repository
 
-    async def get_monthly_visits(
+    async def get_client_visits_in_3_months(
         self, client_name: str
     ) -> ClientWithMonthlyVisitsResponse:
-        client_visits = await self._client_repository.get_user_monthly_visits(
-            client_name=client_name
+        client_visits = (
+            await self._client_repository.get_client_visits_in_3_months(
+                client_name=client_name
+            )
         )
 
         if not client_visits:
