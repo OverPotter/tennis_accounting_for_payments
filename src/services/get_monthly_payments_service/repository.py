@@ -32,15 +32,15 @@ class RepositoryGetMonthlyPaymentsService(AbstractGetMonthlyPaymentsService):
                 entity_name="client",
             )
 
-        monthly_payments = [
-            PaymentBaseResponse(
-                client_id=row[0],
-                payment_date=row[1],
-                amount=row[2],
-            )
-            for row in client_payments
-        ]
-
         return ClientWithMonthlyPaymentsResponse(
-            name=client_name, payments=monthly_payments
+            id=client_payments[0][0].id,
+            name=client_name,
+            payments=[
+                PaymentBaseResponse(
+                    client_id=payment[1].client_id,
+                    payment_date=payment[1].payment_date,
+                    amount=payment[1].amount,
+                )
+                for payment in client_payments
+            ],
         )

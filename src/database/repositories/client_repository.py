@@ -1,9 +1,9 @@
-from typing import Any, Sequence
+from typing import Sequence
 
-from sqlalchemy import Row, select, text
+from sqlalchemy import Row, and_, func, select, text
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel
+from src.database.models.models import ClientModel, PaymentModel, VisitModel
 from src.database.repositories.absctract_repository import AbstractRepository
 
 
@@ -24,36 +24,39 @@ class ClientRepository(AbstractRepository[ClientModel]):
 
     async def get_user_monthly_visits(
         self, client_name: str
-    ) -> Sequence[Row[tuple[Any, ...]]]:
-        query = text(
-            """
-            select * from clients
-            join visits on clients.id = visits.client_id
-            where visits.visit_datetime >= NOW() - INTERVAL 3 MONTH AND clients.name = :client_name
-            order by visits.visit_datetime DESC;
-            """
+    ) -> Sequence[Row[tuple[ClientModel, VisitModel]]]:
+        query = (
+            select(ClientModel, VisitModel)
+            .join(VisitModel, ClientModel.id == VisitModel.client_id)
+            .where(
+                and_(
+                    VisitModel.visit_datetime
+                    >= func.now() - text("INTERVAL '3 MONTH'"),
+                    ClientModel.name == client_name,
+                )
+            )
+            .order_by(VisitModel.visit_datetime.desc())
         )
 
-        result = await self._session.execute(
-            query, {"client_name": client_name}
-        )
+        result = await self._session.execute(query)
         return result.fetchall()
 
+    # todo: DRY
     async def get_user_monthly_payments(
         self, client_name: str
-    ) -> Sequence[Row[tuple[Any, ...]]]:
-        query = text(
-            """
-            select payments.client_id, payments.payment_date, payments.amount
-            from clients
-            join payments on clients.id = payments.client_id
-            where payments.payment_date >= NOW() - INTERVAL 3 MONTH 
-            AND clients.name = :client_name
-            order by payments.payment_date DESC;
-            """
+    ) -> Sequence[Row[tuple[ClientModel, PaymentModel]]]:
+        query = (
+            select(ClientModel, PaymentModel)
+            .join(PaymentModel, ClientModel.id == PaymentModel.client_id)
+            .where(
+                and_(
+                    PaymentModel.payment_date
+                    >= func.now() - text("INTERVAL '3 MONTH'"),
+                    ClientModel.name == client_name,
+                )
+            )
+            .order_by(PaymentModel.payment_date.desc())
         )
 
-        result = await self._session.execute(
-            query, {"client_name": client_name}
-        )
+        result = await self._session.execute(query)
         return result.fetchall()

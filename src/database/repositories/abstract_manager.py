@@ -23,7 +23,7 @@ class AbstractRepositoryManager(ABC):
     async def close(self) -> None: ...
 
     async def __aenter__(self):
-        pass
+        return self
 
     async def __aexit__(
         self, exc_type: Type[Exception], exc_val: Exception, exc_tb: Traceback

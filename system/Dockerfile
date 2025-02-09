@@ -3,8 +3,7 @@ FROM python:3.10.0-slim
 WORKDIR /app
 ENV PYTHONPATH=/app
 
-RUN pip install poetry
-RUN poetry config virtualenvs.create false
+RUN pip install poetry & poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
 

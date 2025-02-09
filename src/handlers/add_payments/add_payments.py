@@ -1,3 +1,5 @@
+from datetime import date
+
 from aiogram import types
 from sqlalchemy.exc import OperationalError
 
@@ -34,7 +36,7 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
                     client_name, amount, payment_date
                 ):
                     await message.answer(
-                        f"Данные для пользователя '{client_name}' сохранены."
+                        f"Данные для клиента '{client_name}' сохранены."
                     )
                 else:
                     await message.answer(
@@ -59,7 +61,7 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
                 )
 
     @staticmethod
-    def _parse_payment_data(payment: str) -> tuple[str, float, str]:
+    def _parse_payment_data(payment: str) -> tuple[str, float, date]:
         payment_data_parts = payment.split(" ", 3)
         if len(payment_data_parts) < 3:
             raise ValueError(f"Invalid number of payment data: {payment}")

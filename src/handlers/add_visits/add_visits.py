@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from aiogram import types
 from sqlalchemy.exc import OperationalError
 
@@ -62,10 +64,12 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                 )
 
     @staticmethod
-    def _parse_visits_data(visits: str) -> tuple[str, str, TrainingTypesEnum]:
+    def _parse_visits_data(
+        visits: str,
+    ) -> tuple[str, datetime, TrainingTypesEnum]:
         visits_data_parts = visits.split(" ", 4)
         if len(visits_data_parts) < 5:
-            raise ValueError(f"Invalid number of payment data: {visits}")
+            raise ValueError(f"Invalid number of visit data: {visits}")
 
         client_name = validate_and_extract_client_name(parts=visits_data_parts)
         visit_datetime = validate_and_extract_visit_datetime(
