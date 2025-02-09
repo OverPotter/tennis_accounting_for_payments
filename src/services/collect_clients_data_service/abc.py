@@ -6,8 +6,8 @@ from src.schemas.response.client.monthly_full_info_about_client import (
 )
 
 
-class AbstractCollectClientDataService(ABC):
+class AbstractCollectClientsDataService(ABC):
     @abstractmethod
-    def collect_client_data(
-        self, client: ClientBaseResponse
+    def collect_clients_data(
+        self, clients: list[ClientBaseResponse]
     ) -> MonthlyFullInfoAboutClientResponse: ...
