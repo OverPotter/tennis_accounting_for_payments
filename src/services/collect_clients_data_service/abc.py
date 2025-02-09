@@ -8,6 +8,6 @@ from src.schemas.response.client.monthly_full_info_about_client import (
 
 class AbstractCollectClientsDataService(ABC):
     @abstractmethod
-    def collect_clients_data(
+    async def collect_clients_data(
         self, clients: list[ClientBaseResponse]
-    ) -> MonthlyFullInfoAboutClientResponse: ...
+    ) -> list[MonthlyFullInfoAboutClientResponse]: ...

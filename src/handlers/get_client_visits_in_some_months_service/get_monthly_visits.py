@@ -13,13 +13,15 @@ from src.utils.validators.validate_client_name import (
 )
 
 
-class GetMonthlyVisitsCommandHandler(BaseCommandHandler):
+class GetClientVisitsInSomeMonthsCommandHandler(BaseCommandHandler):
     def __init__(
         self,
-        get_monthly_visits_service: AbstractGetClientVisitsInSomeMonthsService,
+        get_client_visits_in_some_months_service: AbstractGetClientVisitsInSomeMonthsService,
     ):
         super().__init__()
-        self._get_monthly_visits_service = get_monthly_visits_service
+        self._get_client_visits_in_some_months_service = (
+            get_client_visits_in_some_months_service
+        )
 
     async def handle(self, message: types.Message) -> None:
         try:
@@ -31,7 +33,7 @@ class GetMonthlyVisitsCommandHandler(BaseCommandHandler):
 
             if client_name:
 
-                client_with_monthly_visits = await self._get_monthly_visits_service.get_client_visits_in_3_months(
+                client_with_monthly_visits = await self._get_client_visits_in_some_months_service.get_client_visits_in_3_months(
                     client_name=client_name
                 )
 
