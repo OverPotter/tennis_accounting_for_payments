@@ -36,18 +36,18 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
                     client_name, amount, payment_date
                 ):
                     await message.answer(
-                        f"Данные для клиента '{client_name}' сохранены."
+                        f"Данные для клиента {client_name} сохранены."
                     )
                 else:
                     await message.answer(
-                        f"Ошибка при создании платежа для '{client_name}'. Сообщите администратору."
+                        f"Ошибка при создании платежа для {client_name}. Сообщите администратору."
                     )
             except EntityDoesntExistException as e:
                 self._logger.error(
                     f"Error: The user named {e.value} was not found."
                 )
                 await message.answer(
-                    f"Ошибка: Пользователь с именем '{e.value}' не найден."
+                    f"Ошибка: Пользователь с именем {e.value} не найден."
                 )
 
             except ValueError as e:
