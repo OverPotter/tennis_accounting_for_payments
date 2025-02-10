@@ -4,6 +4,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 from src.constants import (
+    HEADER_BACKGROUND,
     TMP_DIR,
     XLSX_FILE_NAME,
     XLSX_LAST_SUB_HEADER,
@@ -19,7 +20,9 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
 
     def __init__(self):
         self._bright_green_fill = PatternFill(
-            start_color="9ACD32", end_color="9ACD32", fill_type="solid"
+            start_color=HEADER_BACKGROUND,
+            end_color=HEADER_BACKGROUND,
+            fill_type="solid",
         )
         self._black_font = Font(color="000000")
         self._thin_border = Border(

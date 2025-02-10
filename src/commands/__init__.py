@@ -15,6 +15,7 @@ from src.commands.processing_user_response import (
 )
 from src.dispatcher.dispatcher import dp
 
+dp.include_router(create_report_router)
 dp.include_router(add_client_router)
 dp.include_router(add_payments_router)
 dp.include_router(add_visits_router)
@@ -23,4 +24,3 @@ dp.include_router(get_monthly_visits_router)
 dp.include_router(get_number_of_tennis_training_available_router)
 dp.include_router(help_router)
 dp.include_router(processing_user_response_router)
-dp.include_router(create_report_router)

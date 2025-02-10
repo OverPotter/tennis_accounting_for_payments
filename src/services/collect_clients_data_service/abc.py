@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-from src.schemas.response.client.base import ClientBaseResponse
 from src.schemas.response.client.monthly_full_info_about_client import (
     MonthlyFullInfoAboutClientResponse,
 )
@@ -9,5 +8,5 @@ from src.schemas.response.client.monthly_full_info_about_client import (
 class AbstractCollectClientsDataService(ABC):
     @abstractmethod
     async def collect_clients_data(
-        self, clients: list[ClientBaseResponse]
+        self,
     ) -> list[MonthlyFullInfoAboutClientResponse]: ...

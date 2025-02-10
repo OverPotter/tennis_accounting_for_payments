@@ -1,5 +1,4 @@
 from src.database.repositories.abstract_manager import AbstractRepositoryManager
-from src.schemas.response.client.base import ClientBaseResponse
 from src.schemas.response.client.monthly_full_info_about_client import (
     MonthlyFullInfoAboutClientResponse,
 )
@@ -40,7 +39,7 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         )
 
     async def collect_clients_data(
-        self, clients: list[ClientBaseResponse]
+        self,
     ) -> list[MonthlyFullInfoAboutClientResponse]:
         clients = await self._get_all_clients_service.get_all_clients()
         result = []
@@ -50,6 +49,7 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
             client_paid_training_count_for_all_time = await self._get_paid_client_training_service.get_all_client_paid_training_up_to_current_month(
                 client_id=client.id
             )
+
             client_monthly_payments = await self._get_paid_client_training_service.get_monthly_paid_client_trainings(
                 client_id=client.id
             )
@@ -57,6 +57,7 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
             all_client_visits_up_to_current_month = await self._get_client_visits_service.get_all_client_visits_up_to_current_month(
                 client_id=client.id
             )
+
             client_visits_info_for_current_month, client_monthly_visits = (
                 await self._get_client_visits_service.get_monthly_client_visits(
                     client_id=client.id
