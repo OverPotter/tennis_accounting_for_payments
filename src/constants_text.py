@@ -20,3 +20,7 @@ TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST = (
 TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST = "Введите имя и фамилию клиента для получения его посещения (в формате Имя Фамилия):"
 
 TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST = "Введите имя и фамилию клиента для получения его оплаты (в формате Имя Фамилия):"
+
+TEXT_OF_MESSAGE_FOR_CREATE_REPORT = (
+    "Тут будет указываться месяц ... А пока отправляй что хочешь."
+)
