@@ -5,8 +5,8 @@ from src.schemas.response.client.monthly_full_info_about_client import (
 )
 
 
-class AbstractFillInXlsxService(ABC):
+class AbstractCollectClientsDataService(ABC):
     @abstractmethod
-    def fill_in_xlsx(
-        self, clients: list[MonthlyFullInfoAboutClientResponse], filename: str
-    ) -> None: ...
+    async def collect_clients_data(
+        self,
+    ) -> list[MonthlyFullInfoAboutClientResponse]: ...

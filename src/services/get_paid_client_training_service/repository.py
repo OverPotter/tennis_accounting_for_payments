@@ -24,7 +24,7 @@ class RepositoryGetPaidClientTrainingService(
     ):
         self._payment_repository = payment_repository
 
-    async def get_all_paid_client_training_up_to_current_month(
+    async def get_all_client_paid_training_up_to_current_month(
         self, client_id: int
     ) -> int:
         until_what_month = get_first_day_of_current_month()

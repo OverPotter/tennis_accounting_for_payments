@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import TypeAdapter
 
 from src.database.repositories.client_repository import ClientRepository
@@ -23,9 +25,10 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
     async def create_visit(
         self,
         client_name: str,
-        visit_datetime: str,
+        visit_datetime: datetime,
         training_type: TrainingTypesEnum,
     ) -> VisitBaseResponse:
+
         client = await self._client_repository.get(name=client_name)
         if not client:
             raise EntityDoesntExistException(

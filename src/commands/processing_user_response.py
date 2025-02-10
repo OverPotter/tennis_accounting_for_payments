@@ -4,6 +4,7 @@ from src.constants_text import (
     TEXT_OF_MESSAGE_FOR_ADD_CLIENT_REQUEST,
     TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST,
     TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST,
+    TEXT_OF_MESSAGE_FOR_CREATE_REPORT,
     TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST,
     TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST,
     TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST,
@@ -14,17 +15,24 @@ from src.events.visits.create import visit_creation_subject_context
 from src.handlers.add_client.add_client import AddClientCommandHandler
 from src.handlers.add_payments.add_payments import AddPaymentsCommandHandler
 from src.handlers.add_visits.add_visits import AddVisitsCommandHandler
+from src.handlers.create_report.create_report import CreateReportCommandHandler
 from src.handlers.get_client_number_of_tennis_training_available.get_client_number_of_tennis_training_available import (
     GetClientNumberOfTennisTrainingAvailableCommandHandler,
 )
-from src.handlers.get_monthly_payments.get_monthly_payments import (
-    GetMonthlyPaymentsCommandHandler,
+from src.handlers.get_client_payments_in_some_months.get_monthly_payments import (
+    GetClientPaymentsInSomeMonthsCommandHandler,
 )
-from src.handlers.get_monthly_visits.get_monthly_visits import (
-    GetMonthlyVisitsCommandHandler,
+from src.handlers.get_client_visits_in_some_months_service.get_monthly_visits import (
+    GetClientVisitsInSomeMonthsCommandHandler,
+)
+from src.services.collect_clients_data_service.facade import (
+    facade_collect_clients_data_factory,
 )
 from src.services.create_client_service.repository import (
     RepositoryCreateClientService,
+)
+from src.services.create_empty_xlsx_service.create_xlsx import (
+    CreateEmptyExcelTableService,
 )
 from src.services.create_payment_service.repository import (
     RepositoryPaymentService,
@@ -32,11 +40,12 @@ from src.services.create_payment_service.repository import (
 from src.services.create_visit_service.repository import (
     RepositoryCreateVisitsService,
 )
-from src.services.get_monthly_payments_service.repository import (
-    RepositoryGetMonthlyPaymentsService,
+from src.services.fill_in_xlsx_service.fill_in_xlsx import FillInXlsxService
+from src.services.get_client_payments_in_some_months_service.repository import (
+    RepositoryGetClientPaymentsInSomeMonthsService,
 )
-from src.services.get_monthly_visits_service.repository import (
-    RepositoryGetMonthlyVisitsService,
+from src.services.get_client_visits_in_some_months_service.repository import (
+    RepositoryGetClientVisitsInSomeMonthsService,
 )
 from src.services.get_number_of_tennis_training_available_service.repository import (
     RepositoryGetNumberOfTennisTrainingAvailableService,
@@ -68,7 +77,7 @@ async def processing_user_response(message: types.Message):
             message.reply_to_message.text
             == TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST
         ):
-            await handle_monthly_visits_command(message)
+            await handle_client_visits_in_some_months_command(message)
         elif (
             message.reply_to_message.text
             == TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST
@@ -78,7 +87,9 @@ async def processing_user_response(message: types.Message):
             message.reply_to_message.text
             == TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST
         ):
-            await handle_monthly_payments_command(message)
+            await handle_client_payments_in_some_months_command(message)
+        elif message.reply_to_message.text == TEXT_OF_MESSAGE_FOR_CREATE_REPORT:
+            await handle_create_report_command(message)
 
 
 async def handle_payment_command(message: types.Message):
@@ -129,25 +140,39 @@ async def handle_number_of_tennis_training_available_command(
         await handler.handle(message=message)
 
 
-async def handle_monthly_visits_command(
+async def handle_client_visits_in_some_months_command(
     message: types.Message,
 ):
     async with repository_manager:
-        handler = GetMonthlyVisitsCommandHandler(
-            get_monthly_visits_service=RepositoryGetMonthlyVisitsService(
+        handler = GetClientVisitsInSomeMonthsCommandHandler(
+            get_client_visits_in_some_months_service=RepositoryGetClientVisitsInSomeMonthsService(
                 client_repository=repository_manager.get_client_repository(),
-            ),
+            )
         )
         await handler.handle(message=message)
 
 
-async def handle_monthly_payments_command(
+async def handle_client_payments_in_some_months_command(
     message: types.Message,
 ):
     async with repository_manager:
-        handler = GetMonthlyPaymentsCommandHandler(
-            get_monthly_payments_service=RepositoryGetMonthlyPaymentsService(
+        handler = GetClientPaymentsInSomeMonthsCommandHandler(
+            get_client_payments_in_some_months_service=RepositoryGetClientPaymentsInSomeMonthsService(
                 client_repository=repository_manager.get_client_repository(),
+            )
+        )
+        await handler.handle(message=message)
+
+
+async def handle_create_report_command(
+    message: types.Message,
+):
+    async with repository_manager:
+        handler = CreateReportCommandHandler(
+            create_empty_xlsx_service=CreateEmptyExcelTableService(),
+            collect_clients_data_service=facade_collect_clients_data_factory(
+                repository_manager=repository_manager
             ),
+            fill_in_xlsx_service=FillInXlsxService(),
         )
         await handler.handle(message=message)
