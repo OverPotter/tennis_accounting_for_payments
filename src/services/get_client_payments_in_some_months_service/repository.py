@@ -4,23 +4,25 @@ from src.schemas.response.client.monthly_payments import (
     ClientWithMonthlyPaymentsResponse,
 )
 from src.schemas.response.payment.base import PaymentBaseResponse
-from src.services.get_monthly_payments_service.abc import (
-    AbstractGetMonthlyPaymentsService,
+from src.services.get_client_payments_in_some_months_service.abc import (
+    AbstractGetClientPaymentsInSomeMonthsService,
 )
 
 
-class RepositoryGetMonthlyPaymentsService(AbstractGetMonthlyPaymentsService):
+class RepositoryGetClientPaymentsInSomeMonthsService(
+    AbstractGetClientPaymentsInSomeMonthsService
+):
     def __init__(
         self,
         client_repository: ClientRepository,
     ):
         self._client_repository = client_repository
 
-    async def get_monthly_payments(
+    async def get_client_payments_in_3_months(
         self, client_name: str
     ) -> ClientWithMonthlyPaymentsResponse:
         client_payments = (
-            await self._client_repository.get_user_monthly_payments(
+            await self._client_repository.get_client_payments_in_3_months(
                 client_name=client_name
             )
         )
@@ -32,15 +34,15 @@ class RepositoryGetMonthlyPaymentsService(AbstractGetMonthlyPaymentsService):
                 entity_name="client",
             )
 
-        monthly_payments = [
-            PaymentBaseResponse(
-                client_id=row[0],
-                payment_date=row[1],
-                amount=row[2],
-            )
-            for row in client_payments
-        ]
-
         return ClientWithMonthlyPaymentsResponse(
-            name=client_name, payments=monthly_payments
+            id=client_payments[0][0].id,
+            name=client_name,
+            payments=[
+                PaymentBaseResponse(
+                    client_id=payment[1].client_id,
+                    payment_date=payment[1].payment_date,
+                    amount=payment[1].amount,
+                )
+                for payment in client_payments
+            ],
         )

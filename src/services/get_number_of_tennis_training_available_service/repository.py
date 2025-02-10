@@ -35,6 +35,7 @@ class RepositoryGetNumberOfTennisTrainingAvailableService(
             )
 
         return ClientWithTrainingNumberResponse(
+            id=client.id,
             name=client.name,
             number_of_trainings_available=[
                 NumberOfTennisTrainingAvailableBaseResponse(

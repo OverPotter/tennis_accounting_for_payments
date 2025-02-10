@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from aiogram import types
 from sqlalchemy.exc import OperationalError
 
@@ -35,21 +37,21 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                     training_type,
                 ):
                     self._logger.info(
-                        f"Visit for client '{client_name}' has been successfully created."
+                        f"Visit for client {client_name} has been successfully created."
                     )
                     await message.answer(
-                        f"Визит для клиента '{client_name}' успешно добавлен."
+                        f"Визит для клиента {client_name} успешно добавлен."
                     )
                 else:
                     await message.answer(
-                        f"Ошибка при добавлении визита для клиента '{client_name}'. Сообщите администратору."
+                        f"Ошибка при добавлении визита для клиента {client_name}. Сообщите администратору."
                     )
             except EntityDoesntExistException as e:
                 self._logger.error(
                     f"Error: The user named {e.value} was not found."
                 )
                 await message.answer(
-                    f"Ошибка: Пользователь с именем '{e.value}' не найден."
+                    f"Ошибка: Пользователь с именем {e.value} не найден."
                 )
             except ValueError as e:
                 self._logger.error(f"Invalid visits data: {e}")
@@ -62,10 +64,12 @@ class AddVisitsCommandHandler(BaseCommandHandler):
                 )
 
     @staticmethod
-    def _parse_visits_data(visits: str) -> tuple[str, str, TrainingTypesEnum]:
+    def _parse_visits_data(
+        visits: str,
+    ) -> tuple[str, datetime, TrainingTypesEnum]:
         visits_data_parts = visits.split(" ", 4)
         if len(visits_data_parts) < 5:
-            raise ValueError(f"Invalid number of payment data: {visits}")
+            raise ValueError(f"Invalid number of visit data: {visits}")
 
         client_name = validate_and_extract_client_name(parts=visits_data_parts)
         visit_datetime = validate_and_extract_visit_datetime(

@@ -1,6 +1,7 @@
 from src.commands.add_client import router as add_client_router
 from src.commands.add_payments import router as add_payments_router
 from src.commands.add_visits import router as add_visits_router
+from src.commands.create_report import router as create_report_router
 from src.commands.get_monthly_payments import (
     router as get_monthly_payments_router,
 )
@@ -14,6 +15,7 @@ from src.commands.processing_user_response import (
 )
 from src.dispatcher.dispatcher import dp
 
+dp.include_router(create_report_router)
 dp.include_router(add_client_router)
 dp.include_router(add_payments_router)
 dp.include_router(add_visits_router)

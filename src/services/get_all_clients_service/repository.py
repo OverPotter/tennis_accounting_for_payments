@@ -1,3 +1,5 @@
+from pydantic import TypeAdapter
+
 from src.database.repositories.client_repository import ClientRepository
 from src.schemas.response.client.base import ClientBaseResponse
 from src.services.get_all_clients_service.abc import (

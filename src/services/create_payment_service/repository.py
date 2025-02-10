@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import TypeAdapter
 
 from src.database.repositories.client_repository import ClientRepository
@@ -20,7 +22,7 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
         self._subject = subject
 
     async def create_payment(
-        self, client_name: str, amount: float, payment_date: str
+        self, client_name: str, amount: float, payment_date: date
     ) -> PaymentBaseResponse:
 
         client = await self._client_repository.get(name=client_name)
