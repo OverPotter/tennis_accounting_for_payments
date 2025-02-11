@@ -16,7 +16,7 @@ from src.services.create_number_of_tennis_training_available_service.repository 
     RepositoryCreateNumberOfTennisTrainingAvailableService,
 )
 from src.services.logging_service.logging_service import logger_factory
-from src.utils.get_training_type_by_amount import (
+from src.utils.get_training_type_and_number_by_amount import (
     get_training_type_and_number_by_amount,
 )
 
