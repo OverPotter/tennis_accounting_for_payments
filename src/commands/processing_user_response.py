@@ -50,6 +50,7 @@ from src.services.get_client_visits_in_some_months_service.repository import (
 from src.services.get_number_of_tennis_training_available_service.repository import (
     RepositoryGetNumberOfTennisTrainingAvailableService,
 )
+from src.services.send_report_service.telegram import TelegramSendReportService
 
 router = Router()
 repository_manager = orm_repository_manager_factory()
@@ -174,5 +175,6 @@ async def handle_create_report_command(
                 repository_manager=repository_manager
             ),
             fill_in_xlsx_service=FillInXlsxService(),
+            send_report_service=TelegramSendReportService(),
         )
         await handler.handle(message=message)
