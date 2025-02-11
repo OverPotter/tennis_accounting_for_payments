@@ -1,7 +1,10 @@
 from src.database.repositories.abstract_manager import AbstractRepositoryManager
+from src.schemas.response.client.base import ClientBaseResponse
 from src.schemas.response.client.monthly_full_info_about_client import (
     MonthlyFullInfoAboutClientResponse,
 )
+from src.schemas.response.payment.base import PaymentBaseResponse
+from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.collect_clients_data_service.abc import (
     AbstractCollectClientsDataService,
 )
@@ -22,6 +25,9 @@ from src.services.get_paid_client_training_service.abc import (
 )
 from src.services.get_paid_client_training_service.repository import (
     RepositoryGetPaidClientTrainingService,
+)
+from src.utils.get_training_type_and_number_by_amount import (
+    get_training_type_and_number_by_amount,
 )
 
 
@@ -44,47 +50,124 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         clients = await self._get_all_clients_service.get_all_clients()
         result = []
 
-        # todo: solve issue with N+1
+        # todo: N+1
         for client in clients:
-            client_paid_training_count_for_all_time = await self._get_paid_client_training_service.get_all_client_paid_training_up_to_current_month(
-                client_id=client.id
+            client_paid_training_count_for_all_time = (
+                await self._get_client_paid_training_count_for_all_time(client)
             )
-
-            client_monthly_payments = await self._get_paid_client_training_service.get_monthly_paid_client_trainings(
-                client_id=client.id
+            client_monthly_payments = await self._get_client_monthly_payments(
+                client
             )
-
-            all_client_visits_up_to_current_month = await self._get_client_visits_service.get_all_client_visits_up_to_current_month(
-                client_id=client.id
+            paid_monthly_training = self._calculate_paid_monthly_training(
+                client_monthly_payments
             )
-
+            all_client_visits_up_to_current_month = (
+                await self._get_client_visits_up_to_current_month(client)
+            )
             client_visits_info_for_current_month, client_monthly_visits = (
-                await self._get_client_visits_service.get_monthly_client_visits(
-                    client_id=client.id
-                )
+                await self._get_client_visits_info_for_current_month(client)
             )
 
-            visits_at_the_beginning_of_the_month = (
-                all_client_visits_up_to_current_month
-                - client_paid_training_count_for_all_time
-            )
-            visits_at_the_end_of_the_month = (
-                visits_at_the_beginning_of_the_month
-                - client_visits_info_for_current_month
+            (
+                visits_at_the_beginning_of_the_month,
+                visits_at_the_end_of_the_month,
+            ) = self._calculate_visits(
+                all_client_visits_up_to_current_month,
+                client_paid_training_count_for_all_time,
+                client_visits_info_for_current_month,
+                paid_monthly_training,
             )
 
             result.append(
-                MonthlyFullInfoAboutClientResponse(
-                    id=client.id,
-                    name=client.name,
-                    visits_at_the_beginning_of_the_month=visits_at_the_beginning_of_the_month,
-                    monthly_payments=client_monthly_payments,
-                    monthly_visits=client_monthly_visits,
-                    visits_at_the_end_of_the_month=visits_at_the_end_of_the_month,
+                self._create_client_response(
+                    client,
+                    visits_at_the_beginning_of_the_month,
+                    visits_at_the_end_of_the_month,
+                    client_monthly_payments,
+                    client_monthly_visits,
                 )
             )
 
         return result
+
+    async def _get_client_paid_training_count_for_all_time(
+        self, client: ClientBaseResponse
+    ) -> int:
+        return await self._get_paid_client_training_service.get_all_client_paid_training_up_to_current_month(
+            client_id=client.id
+        )
+
+    async def _get_client_monthly_payments(
+        self, client: ClientBaseResponse
+    ) -> list[PaymentBaseResponse]:
+        return await self._get_paid_client_training_service.get_monthly_paid_client_trainings(
+            client_id=client.id
+        )
+
+    @staticmethod
+    def _calculate_paid_monthly_training(
+        client_monthly_payments: list[PaymentBaseResponse],
+    ) -> int:
+        return sum(
+            count
+            for count, _ in (
+                get_training_type_and_number_by_amount(payment.amount)
+                for payment in client_monthly_payments
+            )
+            if isinstance(count, int)
+        )
+
+    async def _get_client_visits_up_to_current_month(
+        self, client: ClientBaseResponse
+    ) -> int:
+        return await self._get_client_visits_service.get_all_client_visits_up_to_current_month(
+            client_id=client.id
+        )
+
+    async def _get_client_visits_info_for_current_month(
+        self, client: ClientBaseResponse
+    ) -> tuple[int, list[VisitBaseResponse]]:
+        return await self._get_client_visits_service.get_monthly_client_visits(
+            client_id=client.id
+        )
+
+    @staticmethod
+    def _calculate_visits(
+        all_client_visits_up_to_current_month: int,
+        client_paid_training_count_for_all_time: int,
+        client_visits_info_for_current_month: int,
+        paid_monthly_training: int,
+    ) -> tuple[int, int]:
+        visits_at_the_beginning_of_the_month = (
+            all_client_visits_up_to_current_month
+            - client_paid_training_count_for_all_time
+        )
+        visits_at_the_end_of_the_month = (
+            visits_at_the_beginning_of_the_month
+            - client_visits_info_for_current_month
+            + paid_monthly_training
+        )
+        return (
+            visits_at_the_beginning_of_the_month,
+            visits_at_the_end_of_the_month,
+        )
+
+    @staticmethod
+    def _create_client_response(
+        client: ClientBaseResponse,
+        visits_at_the_beginning_of_the_month: int,
+        visits_at_the_end_of_the_month: int,
+        client_monthly_payments: list[PaymentBaseResponse],
+        client_monthly_visits: list[VisitBaseResponse],
+    ) -> MonthlyFullInfoAboutClientResponse:
+        return MonthlyFullInfoAboutClientResponse(
+            id=client.id,
+            name=client.name,
+            visits_at_the_beginning_of_the_month=visits_at_the_beginning_of_the_month,
+            monthly_payments=client_monthly_payments,
+            monthly_visits=client_monthly_visits,
+            visits_at_the_end_of_the_month=visits_at_the_end_of_the_month,
+        )
 
 
 def facade_collect_clients_data_factory(

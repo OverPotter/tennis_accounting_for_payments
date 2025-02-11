@@ -11,7 +11,7 @@ from src.utils.get_first_day_of_current_month import (
 from src.utils.get_last_day_of_current_month import (
     get_last_day_of_current_month,
 )
-from src.utils.get_training_type_by_amount import (
+from src.utils.get_training_type_and_number_by_amount import (
     get_training_type_and_number_by_amount,
 )
 
