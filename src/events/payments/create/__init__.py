@@ -16,7 +16,9 @@ from src.services.create_number_of_tennis_training_available_service.repository 
     RepositoryCreateNumberOfTennisTrainingAvailableService,
 )
 from src.services.logging_service.logging_service import logger_factory
-from src.utils.get_training_type_by_amount import get_training_type_by_amount
+from src.utils.get_training_type_by_amount import (
+    get_training_type_and_number_by_amount,
+)
 
 
 @asynccontextmanager
@@ -35,7 +37,9 @@ async def payment_creation_subject_context() -> (
             new_payment = subject.state
 
             number_of_training_for_price, training_type = (
-                get_training_type_by_amount(amount=new_payment.amount)
+                get_training_type_and_number_by_amount(
+                    amount=new_payment.amount
+                )
             )
 
             async with repository_manager:
