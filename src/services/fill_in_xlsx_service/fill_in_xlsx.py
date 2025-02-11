@@ -21,7 +21,7 @@ from src.schemas.response.payment.base import PaymentBaseResponse
 from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.fill_in_xlsx_service.abc import AbstractFillInXlsxService
 from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
-from src.utils.get_training_type_by_amount import (
+from src.utils.get_training_type_and_number_by_amount import (
     get_training_type_and_number_by_amount,
 )
 
