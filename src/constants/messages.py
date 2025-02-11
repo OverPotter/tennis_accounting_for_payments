@@ -21,6 +21,5 @@ TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST = "Введите имя и фа�
 
 TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST = "Введите имя и фамилию клиента для получения его оплаты (в формате Имя Фамилия):"
 
-TEXT_OF_MESSAGE_FOR_CREATE_REPORT = (
-    "Тут будет указываться месяц ... А пока отправляй что хочешь."
-)
+# todo: get month from this message
+TEXT_OF_MESSAGE_FOR_CREATE_REPORT = "Сгенирировать отчет?"
