@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from src.constants import ENV_PATH
+from src.constants.paths import ENV_PATH
 
 load_dotenv()
 

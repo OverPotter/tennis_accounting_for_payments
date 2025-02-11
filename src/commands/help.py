@@ -1,7 +1,7 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 
-from src.constants_text import HELP_TEXT
+from src.constants.messages import HELP_TEXT
 from src.utils.checking_permissions import checking_permissions
 
 router = Router()

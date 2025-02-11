@@ -1,7 +1,7 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 
-from src.constants_text import (
+from src.constants.messages import (
     TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST,
 )
 from src.utils.checking_permissions import checking_permissions

@@ -1,6 +1,6 @@
 from aiogram import Router, types
 
-from src.constants_text import (
+from src.constants.messages import (
     TEXT_OF_MESSAGE_FOR_ADD_CLIENT_REQUEST,
     TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST,
     TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST,

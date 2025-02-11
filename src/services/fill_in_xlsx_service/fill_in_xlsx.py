@@ -4,13 +4,15 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl.styles import Border, PatternFill, Side
 from openpyxl.worksheet.worksheet import Worksheet
 
-from src.constants import (
-    NEGATIVE_TRAINING_COUNT,
-    NEUTRAL_TRAINING_COUNT,
+from src.constants.colors import (
+    NEGATIVE_TRAINING_COUNT_COLOR,
+    NEUTRAL_TRAINING_COUNT_COLOR,
+    POSITIVE_TRAINING_COUNT_COLOR,
+    TABLE_BACKGROUND_COLOR,
+)
+from src.constants.offsets import (
     OFFSET_AFTER_HEADERS_FOR_XLSX,
     OFFSET_BETWEEN_CLIENTS,
-    POSITIVE_TRAINING_COUNT,
-    TABLE_BACKGROUND,
 )
 from src.schemas.response.client.monthly_full_info_about_client import (
     MonthlyFullInfoAboutClientResponse,
@@ -19,29 +21,31 @@ from src.schemas.response.payment.base import PaymentBaseResponse
 from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.fill_in_xlsx_service.abc import AbstractFillInXlsxService
 from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
-from src.utils.get_training_type_by_amount import get_training_type_by_amount
+from src.utils.get_training_type_by_amount import (
+    get_training_type_and_number_by_amount,
+)
 
 
 class FillInXlsxService(AbstractFillInXlsxService):
     def __init__(self) -> None:
         self._light_green_fill = PatternFill(
-            start_color=POSITIVE_TRAINING_COUNT,
-            end_color=POSITIVE_TRAINING_COUNT,
+            start_color=POSITIVE_TRAINING_COUNT_COLOR,
+            end_color=POSITIVE_TRAINING_COUNT_COLOR,
             fill_type="solid",
         )
         self._light_yellow_fill = PatternFill(
-            start_color=NEGATIVE_TRAINING_COUNT,
-            end_color=NEGATIVE_TRAINING_COUNT,
+            start_color=NEGATIVE_TRAINING_COUNT_COLOR,
+            end_color=NEGATIVE_TRAINING_COUNT_COLOR,
             fill_type="solid",
         )
         self._light_gray_fill = PatternFill(
-            start_color=NEUTRAL_TRAINING_COUNT,
-            end_color=NEUTRAL_TRAINING_COUNT,
+            start_color=NEUTRAL_TRAINING_COUNT_COLOR,
+            end_color=NEUTRAL_TRAINING_COUNT_COLOR,
             fill_type="solid",
         )
         self._light_background_fill = PatternFill(
-            start_color=TABLE_BACKGROUND,
-            end_color=TABLE_BACKGROUND,
+            start_color=TABLE_BACKGROUND_COLOR,
+            end_color=TABLE_BACKGROUND_COLOR,
             fill_type="solid",
         )
 
@@ -114,7 +118,7 @@ class FillInXlsxService(AbstractFillInXlsxService):
         offset = 0
         for payment in payments:
             ws.cell(row=row + offset, column=3, value=payment.amount)
-            number_of_paid_training = get_training_type_by_amount(
+            number_of_paid_training = get_training_type_and_number_by_amount(
                 payment.amount
             )[0]
             ws.cell(row=row + offset, column=4, value=number_of_paid_training)
