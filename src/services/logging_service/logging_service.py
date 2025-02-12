@@ -1,33 +1,48 @@
+import asyncio
+import json
 import sys
-from typing import TYPE_CHECKING
+import time
 
+import httpx
 from loguru import logger
 
-from src._settings import settings_factory
-
-if TYPE_CHECKING:
-    from loguru import Logger
-else:
-    Logger = None
+LOKI_URL = "http://loki:3100/loki/api/v1/push"
 
 
-def logger_factory() -> Logger:
+async def send_to_loki(log_dict):
+    payload = {
+        "streams": [
+            {
+                "stream": {"job": "tennis_bot"},
+                "values": [[str(int(time.time() * 1e9)), json.dumps(log_dict)]],
+            }
+        ]
+    }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                LOKI_URL,
+                headers={"Content-Type": "application/json"},
+                json=payload,
+                timeout=2,
+            )
+    except httpx.HTTPError:
+        pass
+
+
+def logger_factory():
     logger.remove()
-    settings = settings_factory()
-
-    log_level = "DEBUG" if settings.DEBUG else "INFO"
-
-    logger.add(
-        sys.stdout,
-        level=log_level,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-        "<level>{level: <8}</level> | "
-        "<cyan>{module}</cyan> - <level>{message}</level>",
-        colorize=True,
+    log_format = (
+        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+        "<level>{level: <8}</level> | <cyan>{module}</cyan> - <level>{message}</level>"
     )
 
-    logger.level("INFO", color="<green>")
-    logger.level("DEBUG", color="<yellow>")
-    logger.level("ERROR", color="<red>")
+    logger.add(sys.stdout, format=log_format, level="DEBUG", colorize=True)
+    logger.add(
+        lambda msg: asyncio.create_task(send_to_loki(msg)),
+        serialize=True,
+        level="INFO",
+    )
 
     return logger

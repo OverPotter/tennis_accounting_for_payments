@@ -18,7 +18,10 @@ setup:
 up:
 	docker compose up --remove-orphans --build \
 		bot \
-		postgresql
+		postgresql \
+		loki \
+		promtail \
+		grafana
 
 db_downgrade:
 	alembic downgrade -1
