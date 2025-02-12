@@ -22,4 +22,6 @@ RUN poetry install --no-root --only main
 COPY src ./src
 COPY alembic.ini ./alembic.ini
 
+RUN mkdir -p /app/src/tmp
+
 CMD ["python", "src/tg_main.py"]
