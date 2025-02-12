@@ -170,3 +170,7 @@ src/tmp/*
 !src/tmp/
 
 .DS_Store
+
+/logcli-linux-amd64.zip
+/docker/loki/wal/
+/docker/grafana/data/
