@@ -1,9 +1,8 @@
 from datetime import date
 
 from aiogram import types
-from sqlalchemy.exc import OperationalError
 
-from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.decorators.error_handler import error_handler
 from src.handlers.base import BaseCommandHandler
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
 from src.utils.validators.validate_amount import validate_and_extract_amount
@@ -23,41 +22,30 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
         super().__init__()
         self._create_payment_service = create_payment_service
 
+    @error_handler
     async def handle(self, message: types.Message) -> None:
         payments = message.text.split("\n")
 
         for payment in payments:
-            try:
-                client_name, amount, payment_date = self._parse_payment_data(
-                    payment
-                )
+            client_name, amount, payment_date = self._parse_payment_data(
+                payment
+            )
 
-                if await self._create_payment_service.create_payment(
-                    client_name, amount, payment_date
-                ):
-                    await message.answer(
-                        f"Данные для клиента {client_name} сохранены."
-                    )
-                else:
-                    await message.answer(
-                        f"Ошибка при создании платежа для {client_name}. Сообщите администратору."
-                    )
-            except EntityDoesntExistException as e:
-                self._logger.error(
-                    f"Error: The user named {e.value} was not found."
+            if await self._create_payment_service.create_payment(
+                client_name, amount, payment_date
+            ):
+                self._logger.info(
+                    f"The payment for {client_name} has been successfully created."
                 )
                 await message.answer(
-                    f"Ошибка: Пользователь с именем {e.value} не найден."
+                    f"Платежные данные для клиента {client_name} сохранены."
                 )
-
-            except ValueError as e:
-                self._logger.error(f"Invalid payment data: {e}")
-                await message.answer(f"Данные не валидны: {e}")
-
-            except OperationalError as e:
-                self._logger.error(f"Problems with database operations: {e}")
+            else:
+                self._logger.warning(
+                    f"Payment for client {client_name} has not been created."
+                )
                 await message.answer(
-                    "Проблемы с работой базы данных. Сообщите администратору."
+                    f"Ошибка при создании платежа для {client_name}. Сообщите администратору."
                 )
 
     @staticmethod
