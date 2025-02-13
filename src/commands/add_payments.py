@@ -2,7 +2,7 @@ from aiogram import Router, types
 from aiogram.filters import Command
 
 from src.constants.messages import TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST
-from src.utils.checking_permissions import checking_permissions
+from src.decorators.checking_permissions import checking_permissions
 
 router = Router()
 

@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from src._settings import settings_factory
-from src.utils.singleton import singleton
+from src.decorators.singleton import singleton
 
 settings = settings_factory()
 
