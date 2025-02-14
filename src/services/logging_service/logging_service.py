@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from src._settings import settings_factory
+from src.settings import settings_factory
 
 if TYPE_CHECKING:
     from loguru import Logger
@@ -13,6 +13,7 @@ else:
 
 def logger_factory() -> Logger:
     logger.remove()
+
     settings = settings_factory()
 
     log_level = "DEBUG" if settings.DEBUG else "INFO"

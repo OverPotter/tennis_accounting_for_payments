@@ -17,6 +17,7 @@ python-dotenv = "^1.0.1"
 pydantic-settings = "^2.4.0"
 loguru = "^0.7.2"
 asyncpg = "^0.30.0"
+sentry-sdk = "^2.21.0"
 
 
 [tool.poetry.group.lint.dependencies]
