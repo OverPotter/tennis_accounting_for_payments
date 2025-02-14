@@ -2,9 +2,11 @@ import asyncio
 
 import src.commands  # noqa: F401
 from src.dispatcher.dispatcher import bot, dp
+from src.sentry.sentry import init_sentry
 
 
 async def main():
+    init_sentry()
     await dp.start_polling(bot, skip_updates=True)
 
 

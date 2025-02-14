@@ -15,8 +15,11 @@ class Settings(BaseSettings):
 
     DB_DRIVER: str
 
+    SENTRY_URL: str
+
     REQUEST_TIMEOUT: int = 60
     DEBUG: bool = False
+    ENVIRONMENT: str = "development"
 
     API_TOKEN: str
 
