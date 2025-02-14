@@ -6,8 +6,8 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine, async_engine_from_config
 
-from src._settings import settings_factory
 from src.database.models.base import Base
+from src.settings import settings_factory
 
 settings = settings_factory()
 

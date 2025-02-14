@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from src._settings import settings_factory
 from src.decorators.singleton import singleton
+from src.settings import settings_factory
 
 settings = settings_factory()
 

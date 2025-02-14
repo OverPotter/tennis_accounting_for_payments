@@ -17,7 +17,7 @@ setup:
 
 up:
 	docker compose up --remove-orphans --build \
-		bot \
+		tg-bot \
 		postgresql
 
 db_downgrade:
