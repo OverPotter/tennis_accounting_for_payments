@@ -2,7 +2,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from src._settings import settings_factory
+from src.settings import settings_factory
 
 settings = settings_factory()
 logging.basicConfig(level=logging.INFO)

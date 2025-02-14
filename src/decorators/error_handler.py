@@ -1,56 +1,39 @@
 from functools import wraps
+from typing import Any, Awaitable, Callable
 
-from sqlalchemy.exc import OperationalError
+import sentry_sdk
+from aiogram import types
 
-from src.exceptions.entity_exceptions import (
-    EntityAlreadyExistException,
-    EntityDoesntExistException,
-)
+from src.constants.error_map import ERROR_MAP
 from src.services.logging_service.logging_service import logger_factory
 
 logger = logger_factory()
 
 
-def error_handler(func):
+async def handle_exception(e: Exception, message: types.Message) -> None:
+    error_message = ERROR_MAP.get(
+        type(e),
+        "Произошла непредвиденная ошибка. Пожалуйста, сообщите администратору.",
+    )
+
+    if type(e) in ERROR_MAP:
+        logger.error(f"{error_message}: {e}")
+    else:
+        logger.exception(f"Unexpected error: {e}")
+
+    sentry_sdk.capture_exception(e)
+    await message.answer(error_message)
+
+
+def error_handler(
+    func: Callable[..., Awaitable[Any]]
+) -> Callable[..., Awaitable[Any]]:
     @wraps(func)
-    async def wrapper(*args, **kwargs):
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return await func(*args, **kwargs)
-
-        except EntityAlreadyExistException as e:
-            logger.error(f"Error: {e}.")
-            message = kwargs.get("message") or args[0]
-            await message.answer(f"Ошибка: {e}.")
-
-        except EntityDoesntExistException as e:
-            logger.error(f"Error: {e}.")
-            message = kwargs.get("message") or args[0]
-            await message.answer(f"Ошибка: {e}.")
-
-        except ValueError as e:
-            logger.error(f"Invalid data: {e}.")
-            message = kwargs.get("message") or args[0]
-            await message.answer(f"Данные не валидны: {e}.")
-
-        except IndexError as e:
-            logger.error(f"Problems with input data parsing: {e}.")
-            message = kwargs.get("message") or args[0]
-            await message.answer(
-                "Проблемы с анализом входных данных, возможно вы указали не все данные."
-            )
-
-        except OperationalError as e:
-            logger.error(f"Database error: {e}.")
-            message = kwargs.get("message") or args[0]
-            await message.answer(
-                "Проблемы с базой данных. Сообщите администратору."
-            )
-
         except Exception as e:
-            logger.exception(f"Unexpected error: {e}.")
             message = kwargs.get("message") or args[0]
-            await message.answer(
-                "Произошла непредвиденная ошибка. Сообщите администратору."
-            )
+            await handle_exception(e, message)
 
     return wrapper
