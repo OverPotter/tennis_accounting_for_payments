@@ -6,9 +6,7 @@ from src.decorators.error_handler import error_handler
 from src.handlers.base import BaseCommandHandler
 from src.schemas.enums.training_types import TrainingTypesEnum
 from src.services.create_visit_service.abc import AbstractCreateVisitsService
-from src.utils.validators.validate_client_name import (
-    validate_and_extract_client_name,
-)
+from src.utils.validators.validate_name import validate_and_extract_name
 from src.utils.validators.validate_training_type import (
     validate_and_extract_training_type,
 )
@@ -57,7 +55,7 @@ class AddVisitsCommandHandler(BaseCommandHandler):
         if len(visits_data_parts) < 5:
             raise ValueError(f"Invalid number of visit data: {visits}")
 
-        client_name = validate_and_extract_client_name(parts=visits_data_parts)
+        client_name = validate_and_extract_name(parts=visits_data_parts)
         visit_datetime = validate_and_extract_visit_datetime(
             parts=visits_data_parts
         )

@@ -8,9 +8,7 @@ from src.services.get_client_payments_in_some_months_service.abc import (
 from src.utils.create_answer_about_monthly_payments import (
     create_answer_about_monthly_payments,
 )
-from src.utils.validators.validate_client_name import (
-    validate_and_extract_client_name,
-)
+from src.utils.validators.validate_name import validate_and_extract_name
 
 
 class GetClientPaymentsInSomeMonthsCommandHandler(BaseCommandHandler):
@@ -27,7 +25,7 @@ class GetClientPaymentsInSomeMonthsCommandHandler(BaseCommandHandler):
     async def handle(self, message: types.Message) -> None:
         client_name_parts = message.text.split(" ", 1)
 
-        client_name = validate_and_extract_client_name(parts=client_name_parts)
+        client_name = validate_and_extract_name(parts=client_name_parts)
 
         if client_name:
 

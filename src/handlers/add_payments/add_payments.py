@@ -6,9 +6,7 @@ from src.decorators.error_handler import error_handler
 from src.handlers.base import BaseCommandHandler
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
 from src.utils.validators.validate_amount import validate_and_extract_amount
-from src.utils.validators.validate_client_name import (
-    validate_and_extract_client_name,
-)
+from src.utils.validators.validate_name import validate_and_extract_name
 from src.utils.validators.validate_payment_date import (
     validate_and_extract_payment_date,
 )
@@ -54,7 +52,7 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
         if len(payment_data_parts) < 3:
             raise ValueError(f"Invalid number of payment data: {payment}")
 
-        client_name = validate_and_extract_client_name(parts=payment_data_parts)
+        client_name = validate_and_extract_name(parts=payment_data_parts)
         amount = validate_and_extract_amount(parts=payment_data_parts)
         payment_date = validate_and_extract_payment_date(
             parts=payment_data_parts
