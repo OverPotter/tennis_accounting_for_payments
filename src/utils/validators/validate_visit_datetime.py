@@ -1,11 +1,11 @@
 from datetime import datetime
 
+from src.constants.regular_expressions import DATETIME_PATTERN
+from src.exceptions.validation_exceptions import InvalidVisitDatetimeError
 
-def validate_and_extract_visit_datetime(parts: list[str]) -> datetime:
-    visit_datetime = f"{parts[2]} {parts[3]}"
+
+def validate_visit_datetime(date_and_time: str) -> datetime:
     try:
-        return datetime.strptime(visit_datetime, "%d.%m.%Y %H:%M")
+        return datetime.strptime(date_and_time, DATETIME_PATTERN)
     except ValueError:
-        raise ValueError(
-            f"The date format is incorrect: {visit_datetime}. Use the DD.MM.YYYY HH:MM format."
-        )
+        raise InvalidVisitDatetimeError(date_and_time)

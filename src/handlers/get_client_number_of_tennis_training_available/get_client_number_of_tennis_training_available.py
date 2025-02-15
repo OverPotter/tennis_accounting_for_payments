@@ -8,9 +8,7 @@ from src.services.get_number_of_tennis_training_available_service.abc import (
 from src.utils.create_answer_about_number_training import (
     create_answer_about_number_training,
 )
-from src.utils.validators.validate_client_name import (
-    validate_and_extract_client_name,
-)
+from src.utils.validators.validate_name import validate_full_name
 
 
 class GetClientNumberOfTennisTrainingAvailableCommandHandler(
@@ -27,9 +25,7 @@ class GetClientNumberOfTennisTrainingAvailableCommandHandler(
 
     @error_handler
     async def handle(self, message: types.Message) -> None:
-        client_name_parts = message.text.split(" ", 1)
-
-        client_name = validate_and_extract_client_name(parts=client_name_parts)
+        client_name = validate_full_name(full_name=message.text)
 
         if client_name:
             client_with_number_of_trainings = await self._get_number_of_tennis_training_available_service.get_client_number_of_tennis_training_available(

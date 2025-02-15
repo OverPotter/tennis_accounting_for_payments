@@ -17,9 +17,9 @@ class RepositoryCreateClientService(AbstractCreateClientService):
         is_user_exist = await self._client_repository.get(name=client_name)
         if is_user_exist:
             raise EntityAlreadyExistException(
-                key="name",
+                key="Name",
                 value=client_name,
-                entity_name="client",
+                entity_name="Client",
             )
 
         client = await self._client_repository.create(name=client_name)
