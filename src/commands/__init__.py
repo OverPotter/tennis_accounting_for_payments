@@ -3,6 +3,7 @@ from src.commands.add_coach import router as add_coach_router
 from src.commands.add_payments import router as add_payments_router
 from src.commands.add_visits import router as add_visits_router
 from src.commands.create_report import router as create_report_router
+from src.commands.errors import router as errors_router
 from src.commands.get_monthly_payments import (
     router as get_monthly_payments_router,
 )
@@ -19,6 +20,7 @@ from src.middleware.error_handler_middleware import ErrorHandlerMiddleware
 
 dp.message.middleware(ErrorHandlerMiddleware())
 
+dp.include_router(errors_router)
 dp.include_router(create_report_router)
 dp.include_router(add_client_router)
 dp.include_router(add_coach_router)
