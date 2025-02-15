@@ -4,6 +4,7 @@ from typing import Type
 
 from src.database.repositories.admin_repository import AdminRepository
 from src.database.repositories.client_repository import ClientRepository
+from src.database.repositories.coach_repository import CoachRepository
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
@@ -50,3 +51,6 @@ class AbstractRepositoryManager(ABC):
     def get_number_of_tennis_training_available_repository(
         self,
     ) -> NumberOfTennisTrainingAvailableRepository: ...
+
+    @abstractmethod
+    def get_coach_repository(self) -> CoachRepository: ...

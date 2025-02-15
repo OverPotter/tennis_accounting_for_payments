@@ -31,7 +31,7 @@ class RepositoryGetClientVisitsInSomeMonthsService(
             raise EntityDoesntExistException(
                 key="name",
                 value=client_name,
-                entity_name="client",
+                entity_name="Client",
             )
 
         return ClientWithMonthlyVisitsResponse(

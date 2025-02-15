@@ -1,17 +1,13 @@
-from datetime import date
-
 from aiogram import types
 
 from src.decorators.error_handler import error_handler
+from src.exceptions.validation_exceptions import InvalidPaymentDataException
 from src.handlers.base import BaseCommandHandler
+from src.schemas.payload.payment.base import PaymentBasePayloadWithName
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
-from src.utils.validators.validate_amount import validate_and_extract_amount
-from src.utils.validators.validate_client_name import (
-    validate_and_extract_client_name,
-)
-from src.utils.validators.validate_payment_date import (
-    validate_and_extract_payment_date,
-)
+from src.utils.validators.validate_amount import validate_amount
+from src.utils.validators.validate_name import validate_full_name
+from src.utils.validators.validate_payment_date import validate_payment_date
 
 
 class AddPaymentsCommandHandler(BaseCommandHandler):
@@ -27,37 +23,40 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
         payments = message.text.split("\n")
 
         for payment in payments:
-            client_name, amount, payment_date = self._parse_payment_data(
-                payment
-            )
+            payment_payload = self._parse_payment_data(payment)
 
             if await self._create_payment_service.create_payment(
-                client_name, amount, payment_date
+                payload=payment_payload
             ):
                 self._logger.info(
-                    f"The payment for {client_name} has been successfully created."
+                    f"The payment for {payment_payload.client_name} has been successfully created."
                 )
                 await message.answer(
-                    f"Платежные данные для клиента {client_name} сохранены."
+                    f"Платежные данные для клиента {payment_payload.client_name} сохранены."
                 )
             else:
                 self._logger.warning(
-                    f"Payment for client {client_name} has not been created."
+                    f"Payment for client {payment_payload.client_name} has not been created."
                 )
                 await message.answer(
-                    f"Ошибка при создании платежа для {client_name}. Сообщите администратору."
+                    f"Ошибка при создании платежа для {payment_payload.client_name}. Сообщите администратору."
                 )
 
     @staticmethod
-    def _parse_payment_data(payment: str) -> tuple[str, float, date]:
+    def _parse_payment_data(payment: str) -> PaymentBasePayloadWithName:
         payment_data_parts = payment.split(" ", 3)
+
         if len(payment_data_parts) < 3:
-            raise ValueError(f"Invalid number of payment data: {payment}")
+            raise InvalidPaymentDataException(payment)
 
-        client_name = validate_and_extract_client_name(parts=payment_data_parts)
-        amount = validate_and_extract_amount(parts=payment_data_parts)
-        payment_date = validate_and_extract_payment_date(
-            parts=payment_data_parts
+        client_name = " ".join(payment_data_parts[:2])
+        amount = payment_data_parts[2]
+        payment_date = payment_data_parts[3]
+
+        client_name = validate_full_name(full_name=client_name)
+        amount = validate_amount(amount=amount)
+        payment_date = validate_payment_date(payment_date=payment_date)
+
+        return PaymentBasePayloadWithName(
+            client_name=client_name, payment_date=payment_date, amount=amount
         )
-
-        return client_name, amount, payment_date

@@ -1,7 +1,8 @@
-def validate_and_extract_amount(parts: list[str]) -> float:
+from src.exceptions.validation_exceptions import InvalidAmountError
+
+
+def validate_amount(amount: str) -> float:
     try:
-        return float(parts[2])
+        return float(amount)
     except ValueError:
-        raise ValueError(
-            f"The amount format is incorrect. The amount must be a number: {parts[2]}."
-        )
+        raise InvalidAmountError(amount)

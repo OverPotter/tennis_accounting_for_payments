@@ -3,9 +3,7 @@ from aiogram import types
 from src.decorators.error_handler import error_handler
 from src.handlers.base import BaseCommandHandler
 from src.services.create_client_service.abc import AbstractCreateClientService
-from src.utils.validators.validate_client_name import (
-    validate_and_extract_client_name,
-)
+from src.utils.validators.validate_name import validate_full_name
 
 
 class AddClientCommandHandler(BaseCommandHandler):
@@ -15,9 +13,7 @@ class AddClientCommandHandler(BaseCommandHandler):
 
     @error_handler
     async def handle(self, message: types.Message) -> None:
-        client_name_parts = message.text.split(" ", 1)
-
-        client_name = validate_and_extract_client_name(parts=client_name_parts)
+        client_name = validate_full_name(full_name=message.text)
 
         if client_name:
 
