@@ -53,3 +53,17 @@ class InvalidVisitDatetimeError(ValidationError):
         message = f"The date format is incorrect: {visit_datetime}. Use the DD.MM.YYYY HH:MM format."
         super().__init__(message)
         self.visit_datetime = visit_datetime
+
+
+class InvalidVisitDataException(ValidationError):
+    def __init__(self, visits: str):
+        message = f"Invalid visit data format: {visits}."
+        super().__init__(message)
+        self.visits = visits
+
+
+class InvalidPaymentDataException(ValidationError):
+    def __init__(self, payment: str):
+        message = f"Invalid payment data format: {payment}."
+        super().__init__(message)
+        self.payments = payment

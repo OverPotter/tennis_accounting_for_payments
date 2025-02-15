@@ -1,18 +1,13 @@
-from datetime import datetime
-
 from aiogram import types
 
 from src.decorators.error_handler import error_handler
+from src.exceptions.validation_exceptions import InvalidVisitDataException
 from src.handlers.base import BaseCommandHandler
-from src.schemas.enums.training_types import TrainingTypesEnum
+from src.schemas.payload.visit.base import VisitBasePayloadWithNames
 from src.services.create_visit_service.abc import AbstractCreateVisitsService
-from src.utils.validators.validate_name import validate_and_extract_name
-from src.utils.validators.validate_training_type import (
-    validate_and_extract_training_type,
-)
-from src.utils.validators.validate_visit_datetime import (
-    validate_and_extract_visit_datetime,
-)
+from src.utils.validators.validate_name import validate_full_name
+from src.utils.validators.validate_training_type import validate_training_type
+from src.utils.validators.validate_visit_datetime import validate_visit_datetime
 
 
 class AddVisitsCommandHandler(BaseCommandHandler):
@@ -24,43 +19,49 @@ class AddVisitsCommandHandler(BaseCommandHandler):
     async def handle(self, message: types.Message):
         visits = message.text.split("\n")
         for visit in visits:
-            client_name, visit_datetime, training_type = (
-                self._parse_visits_data(visit)
+            visit_payload = self._parse_visits_data(visit)
+
+            visit_created = await self._create_visits_service.create_visit(
+                payload=visit_payload
             )
 
-            if await self._create_visits_service.create_visit(
-                client_name,
-                visit_datetime,
-                training_type,
-            ):
+            if visit_created:
                 self._logger.info(
-                    f"Visit for client {client_name} has been successfully created."
+                    f"Visit created: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
                 )
                 await message.answer(
-                    f"Визит для клиента {client_name} успешно добавлен."
+                    f"Визит для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name} успешно добавлен."
                 )
             else:
                 self._logger.warning(
-                    f"The visit for {client_name} has not been created."
+                    f"Failed to create visit: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
                 )
                 await message.answer(
-                    f"Ошибка при добавлении визита для клиента {client_name}. Сообщите администратору."
+                    f"Ошибка при добавлении визита для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name}. Сообщите администратору."
                 )
 
     @staticmethod
     def _parse_visits_data(
         visits: str,
-    ) -> tuple[str, datetime, TrainingTypesEnum]:
-        visits_data_parts = visits.split(" ", 4)
-        if len(visits_data_parts) < 5:
-            raise ValueError(f"Invalid number of visit data: {visits}")
+    ) -> VisitBasePayloadWithNames:
+        visits_data_parts = visits.split(" ", 6)
 
-        client_name = validate_and_extract_name(parts=visits_data_parts)
-        visit_datetime = validate_and_extract_visit_datetime(
-            parts=visits_data_parts
-        )
-        training_type = validate_and_extract_training_type(
-            parts=visits_data_parts
-        )
+        if len(visits_data_parts) < 7:
+            raise InvalidVisitDataException(visits)
 
-        return client_name, visit_datetime, training_type
+        client_name = " ".join(visits_data_parts[:2])
+        visit_datetime = " ".join(visits_data_parts[2:4])
+        coach_name = " ".join(visits_data_parts[4:6])
+        training_type = visits_data_parts[6]
+
+        client_name = validate_full_name(full_name=client_name)
+        visit_datetime = validate_visit_datetime(date_and_time=visit_datetime)
+        coach_name = validate_full_name(full_name=coach_name)
+        training_type = validate_training_type(training_type=training_type)
+
+        return VisitBasePayloadWithNames(
+            client_name=client_name,
+            coach_name=coach_name,
+            visit_datetime=visit_datetime,
+            training_type=training_type,
+        )

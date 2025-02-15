@@ -1,13 +1,10 @@
-from datetime import date
-
-from pydantic import TypeAdapter
-
 from src.database.repositories.client_repository import ClientRepository
 from src.database.repositories.payment_repository import PaymentRepository
 from src.events.abc import AbstractSubject
-from src.exceptions.entity_exceptions import EntityDoesntExistException
+from src.schemas.payload.payment.base import PaymentBasePayloadWithName
 from src.schemas.response.payment.base import PaymentBaseResponse
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
+from src.utils.get_entity import get_entity
 
 
 class RepositoryPaymentService(AbstractCreatePaymentService):
@@ -22,21 +19,21 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
         self._subject = subject
 
     async def create_payment(
-        self, client_name: str, amount: float, payment_date: date
+        self, payload: PaymentBasePayloadWithName
     ) -> PaymentBaseResponse:
 
-        client = await self._client_repository.get(name=client_name)
-        if not client:
-            raise EntityDoesntExistException(
-                key="name",
-                value=client_name,
-                entity_name="client",
-            )
+        client = await get_entity(
+            repository=self._client_repository,
+            name=payload.client_name,
+            entity_name="Client",
+        )
 
         payment = await self._payment_repository.create(
-            client_id=client.id, amount=amount, payment_date=payment_date
+            client_id=client.id,
+            amount=payload.amount,
+            payment_date=payload.payment_date,
         )
-        created_payment = TypeAdapter(PaymentBaseResponse).validate_python(payment)  # type: ignore
+        created_payment = PaymentBaseResponse.model_validate(payment)
 
         if self._subject is not None:
             await self._subject.update(created_payment)

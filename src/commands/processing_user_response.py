@@ -142,6 +142,7 @@ async def handle_visits_command(message: types.Message):
             handler = AddVisitsCommandHandler(
                 create_visits_service=RepositoryCreateVisitsService(
                     client_repository=repository_manager.get_client_repository(),
+                    coach_repository=repository_manager.get_coach_repository(),
                     visits_repository=repository_manager.get_visits_repository(),
                     subject=visit_creation_subject,
                 ),

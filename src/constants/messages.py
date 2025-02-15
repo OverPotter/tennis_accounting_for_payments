@@ -21,20 +21,32 @@ TEXT_OF_MESSAGE_FOR_ADD_CLIENT_REQUEST = (
     "Введите имя и фамилию нового клиента (в формтае Имя Фамилия):"
 )
 
-TEXT_OF_MESSAGE_FOR_ADD_COACH_REQUEST = f"Введите имя и фамилию нового тренера (в формтае Имя Фамилия) и его специализацию ({SpecializationEnum.get_allowed_values()}):"
+TEXT_OF_MESSAGE_FOR_ADD_COACH_REQUEST = (
+    f"Введите имя и фамилию нового тренера (в формтае Имя Фамилия) и его "
+    f"специализацию ({SpecializationEnum.get_allowed_values()}):"
+)
 
 TEXT_OF_MESSAGE_FOR_ADD_PAYMENTS_REQUEST = (
     "Введите данные формата: полное имя сумма дата (в формате DD.MM.YYYY):"
 )
 
-TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST = f"Введите данные формата: имя фамилия дата и время  (в формате DD.MM.YYYY HH:MM) тип тренировки ({TrainingTypesEnum.get_allowed_values()}):"
+TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST = (
+    f"Введите данные формата: имя фамилия дата и время  (в формате DD.MM.YYYY "
+    f"HH:MM) имя фамилия тренера тип тренировки ({TrainingTypesEnum.get_allowed_values()}):"
+)
 
 TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST = (
     "Введите имя и фамилию клиента (в формате Имя Фамилия):"
 )
-TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST = "Введите имя и фамилию клиента для получения его посещения (в формате Имя Фамилия):"
+TEXT_OF_MESSAGE_FOR_GET_MONTHLY_VISITS_REQUEST = (
+    "Введите имя и фамилию клиента для получения его посещения (в "
+    "формате Имя Фамилия):"
+)
 
-TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST = "Введите имя и фамилию клиента для получения его оплаты (в формате Имя Фамилия):"
+TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST = (
+    "Введите имя и фамилию клиента для получения его оплаты (в формате "
+    "Имя Фамилия):"
+)
 
 # todo: get month from this message
 TEXT_OF_MESSAGE_FOR_CREATE_REPORT = "Сгенирировать отчет?"

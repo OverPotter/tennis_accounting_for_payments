@@ -4,7 +4,7 @@ from src.decorators.error_handler import error_handler
 from src.handlers.base import BaseCommandHandler
 from src.schemas.payload.coach.base import CoachBasePayload
 from src.services.create_coach_service.abc import AbstractCreateCoachService
-from src.utils.validators.validate_name import validate_and_extract_name
+from src.utils.validators.validate_name import validate_full_name
 from src.utils.validators.validate_specialization import validate_specialization
 
 
@@ -17,7 +17,7 @@ class AddCoachCommandHandler(BaseCommandHandler):
     async def handle(self, message: types.Message) -> None:
         coach_data = message.text.split(" ", 2)
 
-        coach_name = validate_and_extract_name(parts=coach_data[:-1])
+        coach_name = validate_full_name(full_name=" ".join(coach_data[:-1]))
         specialization = validate_specialization(specialization=coach_data[-1])
 
         if coach_name:

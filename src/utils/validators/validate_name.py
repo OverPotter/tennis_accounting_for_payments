@@ -2,11 +2,8 @@ from src.constants.regular_expressions import NAME_PATTERN
 from src.exceptions.validation_exceptions import InvalidNameError
 
 
-def validate_and_extract_name(parts: list[str]) -> str:
-    name_parts = parts[:2]
+def validate_full_name(full_name: str) -> str:
+    if not NAME_PATTERN.match(full_name.strip()):
+        raise InvalidNameError(full_name)
 
-    for part in name_parts:
-        if not NAME_PATTERN.match(part):
-            raise InvalidNameError(part)
-
-    return f"{parts[0]} {parts[1]}"
+    return full_name.strip()
