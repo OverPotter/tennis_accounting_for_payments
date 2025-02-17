@@ -67,7 +67,7 @@ async def payment_creation_subject_context() -> (
                     )
 
                     if updated_rowcount == 0:
-                        logger.error(
+                        logger.warning(
                             f"[Payment Observer] Error with save {new_payment}."
                         )
                 else:
@@ -85,7 +85,7 @@ async def payment_creation_subject_context() -> (
                         f"[Payment Observer] Create new available training for user with id={new_payment.client_id}."
                     )
                     if not created_entity:
-                        logger.error(
+                        logger.warning(
                             f"[Payment Observer] Error with save {new_payment}."
                         )
 
