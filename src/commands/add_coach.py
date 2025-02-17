@@ -8,7 +8,7 @@ router = Router()
 
 
 @router.message(Command("add_coach"))
-@checking_permissions
+@checking_permissions([AdminRoleEnum.ADMIN])
 async def add_coach(message: types.Message):
     await message.answer(
         TEXT_OF_MESSAGE_FOR_ADD_COACH_REQUEST,

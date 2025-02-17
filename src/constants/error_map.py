@@ -2,6 +2,10 @@ from typing import Dict, Type
 
 from sqlalchemy.exc import OperationalError
 
+from src.exceptions.access_control_exceptions import (
+    RolePermissionError,
+    UserNotRegisteredError,
+)
 from src.exceptions.entity_exceptions import (
     EntityAlreadyExistException,
     EntityDoesntExistException,
@@ -32,4 +36,6 @@ ERROR_MAP: Dict[Type[Exception], str] = {
     EntityDoesntExistException: "Запрашиваемый объект не найден.",
     IndexError: "Не хватает данных для обработки запроса. Проверьте ввод.",
     OperationalError: "Ошибка соединения с базой данных. Попробуйте позже или сообщите администратору.",
+    UserNotRegisteredError: "Пользователь с таким ID не зарегистрирован в системе админов.",
+    RolePermissionError: "Отказ в доступе: у пользователя нет прав для выполнения этой операции.",
 }

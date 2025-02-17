@@ -13,6 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.models.base import Base, BaseIDModel
+from src.schemas.enums.admin_roles import AdminRoleEnum
 from src.schemas.enums.specializations import SpecializationEnum
 from src.schemas.enums.training_types import TrainingTypesEnum
 
@@ -85,3 +86,4 @@ class PaymentModel(BaseIDModel):
 class AdminModel(Base):
     __tablename__ = "admins"
     tg_id: Mapped[int] = mapped_column(primary_key=True)
+    role: Mapped[AdminRoleEnum] = mapped_column(nullable=False)

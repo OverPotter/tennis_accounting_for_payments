@@ -8,7 +8,7 @@ router = Router()
 
 
 @router.message(Command("add_visits"))
-@checking_permissions
+@checking_permissions([AdminRoleEnum.ADMIN])
 async def add_visits(message: types.Message):
     await message.answer(
         TEXT_OF_MESSAGE_FOR_ADD_VISITS_REQUEST,
