@@ -25,6 +25,6 @@ COPY alembic.ini ./alembic.ini
 
 COPY --chmod=777 docker/entrypoint.sh /usr/local/bin/entrypoint
 
-RUN mkdir -p /app/src/tmp
+RUN mkdir -p /app/tmp
 
 ENTRYPOINT ["entrypoint"]
