@@ -1,4 +1,6 @@
 import locale
+import os
+import tempfile
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -13,7 +15,6 @@ from src.constants.column_widths import (
     PAID_TRAINING_SESSIONS_COLUMN_WIDTH,
     PAYMENT_AMOUNT_COLUMN_WIDTH,
 )
-from src.constants.paths import TMP_DIR
 from src.constants.xlsx_config import (
     XLSX_FILE_NAME,
     XLSX_LAST_SUB_HEADER,
@@ -41,12 +42,16 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
             bottom=Side(style="thin"),
         )
 
-    # todo: async
-    def create_xlsx_table(self) -> str:
+    async def create_xlsx_table(self) -> str:
         number_days_of_in_month, current_month_name, current_year = (
             get_number_of_days_in_month()
         )
         locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
+
+        report_filename = (
+            f"{XLSX_FILE_NAME}_{current_month_name}_{current_year}.xlsx"
+        )
+        report_path = os.path.join(tempfile.gettempdir(), report_filename)
 
         wb = Workbook()
         ws = wb.active
@@ -55,9 +60,8 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
         self._create_sub_headers(ws, number_days_of_in_month)
         self._set_column_widths(ws, number_days_of_in_month)
 
-        filename = f"{TMP_DIR}/{XLSX_FILE_NAME}_{current_month_name}_{current_year}.xlsx"
-        wb.save(filename)
-        return filename
+        wb.save(report_path)
+        return report_path
 
     def _create_headers(self, ws, current_month_name, number_days_of_in_month):
         ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=6)
