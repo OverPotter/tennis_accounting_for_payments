@@ -139,8 +139,8 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         paid_monthly_training: int,
     ) -> tuple[int, int]:
         visits_at_the_beginning_of_the_month = (
-            all_client_visits_up_to_current_month
-            - client_paid_training_count_for_all_time
+            client_paid_training_count_for_all_time
+            - all_client_visits_up_to_current_month
         )
         visits_at_the_end_of_the_month = (
             visits_at_the_beginning_of_the_month

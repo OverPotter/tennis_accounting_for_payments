@@ -56,7 +56,7 @@ async def visit_creation_subject_context() -> (
                     )
 
                     if updated_rowcount == 0:
-                        logger.error(
+                        logger.warning(
                             f"[Visit Observer] Error with save {new_visit}."
                         )
                 else:
@@ -75,7 +75,7 @@ async def visit_creation_subject_context() -> (
                         f"[Visit Observer] Create new training for user with id={new_visit.client_id}."
                     )
                     if not created_entity:
-                        logger.error(
+                        logger.warning(
                             f"[Visit Observer] Error with save {new_visit}."
                         )
 

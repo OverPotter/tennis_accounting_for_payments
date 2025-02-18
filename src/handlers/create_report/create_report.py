@@ -28,7 +28,7 @@ class CreateReportCommandHandler(BaseCommandHandler):
 
     @error_handler
     async def handle(self, message: types.Message) -> None:
-        report_path = self._create_empty_xlsx_service.create_xlsx_table()
+        report_path = await self._create_empty_xlsx_service.create_xlsx_table()
         self._logger.debug(
             f"An empty file for the report has been created: {report_path}."
         )

@@ -8,6 +8,9 @@ services:
       - ./docker/backend/.env
     depends_on:
       - postgresql
+    volumes:
+      - ./src:/app/src
+    command: ["entrypoint"]
 
   postgresql:
     image: postgres

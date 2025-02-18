@@ -2,6 +2,8 @@
 
 entity "admins" {
     *tg_id : int <<PK>>
+    --
+    role : AdminRoleEnum
 }
 
 entity "clients" as users {

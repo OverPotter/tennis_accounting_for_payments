@@ -14,15 +14,15 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
         client_repository: ClientRepository,
         coach_repository: CoachRepository,
         visits_repository: VisitsRepository,
-        subject: AbstractSubject[VisitBaseResponse] | None = None,
     ):
         self._client_repository = client_repository
         self._coach_repository = coach_repository
         self._visits_repository = visits_repository
-        self._subject = subject
 
     async def create_visit(
-        self, payload: VisitBasePayloadWithNames
+        self,
+        payload: VisitBasePayloadWithNames,
+        subject: AbstractSubject[VisitBaseResponse] | None = None,
     ) -> VisitBaseResponse:
 
         client = await get_entity(
@@ -45,7 +45,7 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
         )
 
         created_visit = VisitBaseResponse.model_validate(visit)
-        if self._subject is not None:
-            await self._subject.update(created_visit)
+        if subject is not None:
+            await subject.update(created_visit)
 
         return created_visit

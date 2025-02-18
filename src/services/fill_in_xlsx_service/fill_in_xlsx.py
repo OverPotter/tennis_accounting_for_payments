@@ -4,6 +4,7 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl.styles import Border, PatternFill, Side
 from openpyxl.worksheet.worksheet import Worksheet
 
+from src.constants.cell_hieght import CELL_WITH_CLIENTS_DATA_HEIGHT
 from src.constants.colors import (
     NEGATIVE_TRAINING_COUNT_COLOR,
     NEUTRAL_TRAINING_COUNT_COLOR,
@@ -143,6 +144,8 @@ class FillInXlsxService(AbstractFillInXlsxService):
         last_col = 6 + get_number_of_days_in_month()[0] + 1
 
         for r in range(block_start, block_end + 1):
+            ws.row_dimensions[r].height = CELL_WITH_CLIENTS_DATA_HEIGHT
+
             for c in range(1, last_col + 1):
                 cell = ws.cell(row=r, column=c)
 
@@ -165,4 +168,19 @@ class FillInXlsxService(AbstractFillInXlsxService):
                     bottom=bottom_side,
                     left=left_side,
                     right=right_side,
+                )
+
+        self._fill_in_the_offset_lines_with_color(
+            ws=ws, last_col=last_col, block_end=block_end
+        )
+
+    def _fill_in_the_offset_lines_with_color(
+        self, ws: Worksheet, last_col: int, block_end: int
+    ):
+        if OFFSET_BETWEEN_CLIENTS > 0:
+            empty_row = block_end + 1
+            ws.row_dimensions[empty_row].height = 15
+            for c in range(1, last_col + 1):
+                ws.cell(row=empty_row, column=c).fill = (
+                    self._light_background_fill
                 )

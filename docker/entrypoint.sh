@@ -2,4 +2,4 @@
 set -e
 
 alembic upgrade head
-python src/tg_main.py
+exec watchmedo auto-restart --directory=./src --pattern="*.py" --recursive -- python src/tg_main.py
