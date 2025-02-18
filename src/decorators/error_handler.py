@@ -17,7 +17,7 @@ async def handle_exception(e: Exception, message: types.Message) -> None:
     )
 
     if type(e) in ERROR_MAP:
-        logger.error(f"{error_message}: {e}")
+        logger.warning(f"{error_message}: {e}")
     else:
         logger.exception(f"Unexpected error: {e}")
 
