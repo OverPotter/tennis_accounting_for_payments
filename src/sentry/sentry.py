@@ -1,4 +1,3 @@
-
 import sentry_sdk
 
 from src.settings import settings_factory
