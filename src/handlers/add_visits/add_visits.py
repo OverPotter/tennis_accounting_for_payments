@@ -1,6 +1,7 @@
 from aiogram import types
 
 from src.decorators.error_handler import error_handler
+from src.events.visits.create import visit_creation_subject_context
 from src.exceptions.validation_exceptions import InvalidVisitDataException
 from src.handlers.base import BaseCommandHandler
 from src.schemas.payload.visit.base import VisitBasePayloadWithNames
@@ -21,24 +22,26 @@ class AddVisitsCommandHandler(BaseCommandHandler):
         for visit in visits:
             visit_payload = self._parse_visits_data(visit)
 
-            visit_created = await self._create_visits_service.create_visit(
-                payload=visit_payload
-            )
+            async with visit_creation_subject_context() as visit_creation_subject:
 
-            if visit_created:
-                self._logger.info(
-                    f"Visit created: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
+                visit_created = await self._create_visits_service.create_visit(
+                    payload=visit_payload, subject=visit_creation_subject
                 )
-                await message.answer(
-                    f"Визит для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name} успешно добавлен."
-                )
-            else:
-                self._logger.warning(
-                    f"Failed to create visit: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
-                )
-                await message.answer(
-                    f"Ошибка при добавлении визита для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name}. Сообщите администратору."
-                )
+
+                if visit_created:
+                    self._logger.info(
+                        f"Visit created: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
+                    )
+                    await message.answer(
+                        f"Визит для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name} успешно добавлен."
+                    )
+                else:
+                    self._logger.warning(
+                        f"Failed to create visit: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
+                    )
+                    await message.answer(
+                        f"Ошибка при добавлении визита для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name}. Сообщите администратору."
+                    )
 
     @staticmethod
     def _parse_visits_data(

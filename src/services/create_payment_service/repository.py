@@ -12,14 +12,14 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
         self,
         client_repository: ClientRepository,
         payment_repository: PaymentRepository,
-        subject: AbstractSubject[PaymentBaseResponse] | None = None,
     ):
         self._client_repository = client_repository
         self._payment_repository = payment_repository
-        self._subject = subject
 
     async def create_payment(
-        self, payload: PaymentBasePayloadWithName
+        self,
+        payload: PaymentBasePayloadWithName,
+        subject: AbstractSubject[PaymentBaseResponse] | None = None,
     ) -> PaymentBaseResponse:
 
         client = await get_entity(
@@ -35,7 +35,7 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
         )
         created_payment = PaymentBaseResponse.model_validate(payment)
 
-        if self._subject is not None:
-            await self._subject.update(created_payment)
+        if subject is not None:
+            await subject.update(created_payment)
 
         return created_payment

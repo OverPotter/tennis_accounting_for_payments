@@ -11,8 +11,6 @@ from src.constants.messages import (
     TEXT_OF_MESSAGE_FOR_GET_NUMBER_OF_TENNIS_TRAINING_AVAILABLE_REQUEST,
 )
 from src.database.repositories.manager import orm_repository_manager_factory
-from src.events.payments.create import payment_creation_subject_context
-from src.events.visits.create import visit_creation_subject_context
 from src.handlers.add_client.add_client import AddClientCommandHandler
 from src.handlers.add_coach.add_coach import AddCoachCommandHandler
 from src.handlers.add_payments.add_payments import AddPaymentsCommandHandler
@@ -104,16 +102,14 @@ async def processing_user_response(message: types.Message):
 
 
 async def handle_payment_command(message: types.Message):
-    async with payment_creation_subject_context() as payment_creation_subject:
-        async with repository_manager:
-            handler = AddPaymentsCommandHandler(
-                create_payment_service=RepositoryPaymentService(
-                    client_repository=repository_manager.get_client_repository(),
-                    payment_repository=repository_manager.get_payment_repository(),
-                    subject=payment_creation_subject,
-                ),
-            )
-            await handler.handle(message=message)
+    async with repository_manager:
+        handler = AddPaymentsCommandHandler(
+            create_payment_service=RepositoryPaymentService(
+                client_repository=repository_manager.get_client_repository(),
+                payment_repository=repository_manager.get_payment_repository(),
+            ),
+        )
+        await handler.handle(message=message)
 
 
 async def handle_client_command(message: types.Message):
@@ -137,17 +133,15 @@ async def handle_coach_command(message: types.Message):
 
 
 async def handle_visits_command(message: types.Message):
-    async with visit_creation_subject_context() as visit_creation_subject:
-        async with repository_manager:
-            handler = AddVisitsCommandHandler(
-                create_visits_service=RepositoryCreateVisitsService(
-                    client_repository=repository_manager.get_client_repository(),
-                    coach_repository=repository_manager.get_coach_repository(),
-                    visits_repository=repository_manager.get_visits_repository(),
-                    subject=visit_creation_subject,
-                ),
-            )
-            await handler.handle(message=message)
+    async with repository_manager:
+        handler = AddVisitsCommandHandler(
+            create_visits_service=RepositoryCreateVisitsService(
+                client_repository=repository_manager.get_client_repository(),
+                coach_repository=repository_manager.get_coach_repository(),
+                visits_repository=repository_manager.get_visits_repository(),
+            ),
+        )
+        await handler.handle(message=message)
 
 
 async def handle_number_of_tennis_training_available_command(

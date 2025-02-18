@@ -1,6 +1,7 @@
 from aiogram import types
 
 from src.decorators.error_handler import error_handler
+from src.events.payments.create import payment_creation_subject_context
 from src.exceptions.validation_exceptions import InvalidPaymentDataException
 from src.handlers.base import BaseCommandHandler
 from src.schemas.payload.payment.base import PaymentBasePayloadWithName
@@ -25,22 +26,23 @@ class AddPaymentsCommandHandler(BaseCommandHandler):
         for payment in payments:
             payment_payload = self._parse_payment_data(payment)
 
-            if await self._create_payment_service.create_payment(
-                payload=payment_payload
-            ):
-                self._logger.info(
-                    f"The payment for {payment_payload.client_name} has been successfully created."
-                )
-                await message.answer(
-                    f"Платежные данные для клиента {payment_payload.client_name} сохранены."
-                )
-            else:
-                self._logger.warning(
-                    f"Payment for client {payment_payload.client_name} has not been created."
-                )
-                await message.answer(
-                    f"Ошибка при создании платежа для {payment_payload.client_name}. Сообщите администратору."
-                )
+            async with payment_creation_subject_context() as payment_creation_subject:
+                if await self._create_payment_service.create_payment(
+                    payload=payment_payload, subject=payment_creation_subject
+                ):
+                    self._logger.info(
+                        f"The payment for {payment_payload.client_name} has been successfully created."
+                    )
+                    await message.answer(
+                        f"Платежные данные для клиента {payment_payload.client_name} сохранены."
+                    )
+                else:
+                    self._logger.warning(
+                        f"Payment for client {payment_payload.client_name} has not been created."
+                    )
+                    await message.answer(
+                        f"Ошибка при создании платежа для {payment_payload.client_name}. Сообщите администратору."
+                    )
 
     @staticmethod
     def _parse_payment_data(payment: str) -> PaymentBasePayloadWithName:
