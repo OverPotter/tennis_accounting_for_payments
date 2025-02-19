@@ -49,4 +49,6 @@ TEXT_OF_MESSAGE_FOR_GET_MONTHLY_PAYMENTS_REQUEST = (
 )
 
 # todo: get month from this message
-TEXT_OF_MESSAGE_FOR_CREATE_REPORT = "Сгенирировать отчет?"
+TEXT_OF_MESSAGE_FOR_CREATE_REPORT = (
+    "Введите имя и фамилию тренера, для которого нужно сгенирировать отчет:"
+)

@@ -45,27 +45,32 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         )
 
     async def collect_clients_data(
-        self,
+        self, coach_name: str
     ) -> list[MonthlyFullInfoAboutClientResponse]:
         clients = await self._get_all_clients_service.get_all_clients()
         result = []
 
-        # todo: N+1
         for client in clients:
             client_paid_training_count_for_all_time = (
-                await self._get_client_paid_training_count_for_all_time(client)
+                await self._get_client_paid_training_count_for_all_time(
+                    client=client, coach_name=coach_name
+                )
             )
             client_monthly_payments = await self._get_client_monthly_payments(
-                client
+                client=client, coach_name=coach_name
             )
             paid_monthly_training = self._calculate_paid_monthly_training(
-                client_monthly_payments
+                client_monthly_payments=client_monthly_payments
             )
             all_client_visits_up_to_current_month = (
-                await self._get_client_visits_up_to_current_month(client)
+                await self._get_client_visits_up_to_current_month(
+                    client=client, coach_name=coach_name
+                )
             )
             client_visits_info_for_current_month, client_monthly_visits = (
-                await self._get_client_visits_info_for_current_month(client)
+                await self._get_client_visits_info_for_current_month(
+                    client=client, coach_name=coach_name
+                )
             )
 
             (
@@ -91,17 +96,17 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         return result
 
     async def _get_client_paid_training_count_for_all_time(
-        self, client: ClientBaseResponse
+        self, client: ClientBaseResponse, coach_name: str | None = None
     ) -> int:
         return await self._get_paid_client_training_service.get_all_client_paid_training_up_to_current_month(
-            client_id=client.id
+            client_id=client.id, coach_name=coach_name
         )
 
     async def _get_client_monthly_payments(
-        self, client: ClientBaseResponse
+        self, client: ClientBaseResponse, coach_name: str | None = None
     ) -> list[PaymentBaseResponse]:
         return await self._get_paid_client_training_service.get_monthly_paid_client_trainings(
-            client_id=client.id
+            client_id=client.id, coach_name=coach_name
         )
 
     @staticmethod
@@ -118,17 +123,17 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         )
 
     async def _get_client_visits_up_to_current_month(
-        self, client: ClientBaseResponse
+        self, client: ClientBaseResponse, coach_name: str | None = None
     ) -> int:
         return await self._get_client_visits_service.get_all_client_visits_up_to_current_month(
-            client_id=client.id
+            client_id=client.id, coach_name=coach_name
         )
 
     async def _get_client_visits_info_for_current_month(
-        self, client: ClientBaseResponse
+        self, client: ClientBaseResponse, coach_name: str | None = None
     ) -> tuple[int, list[VisitBaseResponse]]:
         return await self._get_client_visits_service.get_monthly_client_visits(
-            client_id=client.id
+            client_id=client.id, coach_name=coach_name
         )
 
     @staticmethod
