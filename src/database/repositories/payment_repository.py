@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Sequence
 
-
 from src.database.models.models import PaymentModel
 from src.database.repositories.absctract_repository import AbstractRepository
 
