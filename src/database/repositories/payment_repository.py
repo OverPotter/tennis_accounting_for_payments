@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Sequence
 
-from sqlalchemy import desc, select
 
 from src.database.models.models import PaymentModel
 from src.database.repositories.absctract_repository import AbstractRepository
@@ -13,17 +12,11 @@ class PaymentRepository(AbstractRepository[PaymentModel]):
     async def get_all_paid_client_training_up_to_current_month(
         self, client_id: int, until_what_month: datetime.date
     ) -> Sequence[PaymentModel]:
-        query = (
-            select(PaymentModel)
-            .filter(
-                PaymentModel.client_id == client_id,
-                PaymentModel.payment_date < until_what_month,
-            )
-            .order_by(desc(PaymentModel.payment_date))
+        return await self.get_all_by_client_up_to_date(
+            client_id=client_id,
+            date_field="payment_date",
+            until_what_month=until_what_month,
         )
-
-        result = await self._session.execute(query)
-        return result.scalars().fetchall()
 
     async def get_monthly_client_paid_training_visits(
         self,
@@ -31,15 +24,9 @@ class PaymentRepository(AbstractRepository[PaymentModel]):
         first_day_of_current_month: datetime.date,
         last_day_of_current_month: datetime.date,
     ) -> Sequence[PaymentModel]:
-        query = (
-            select(PaymentModel)
-            .filter(
-                PaymentModel.client_id == client_id,
-                PaymentModel.payment_date >= first_day_of_current_month,
-                PaymentModel.payment_date <= last_day_of_current_month,
-            )
-            .order_by(desc(PaymentModel.payment_date))
+        return await self.get_monthly_client_entries(
+            client_id=client_id,
+            date_field="payment_date",
+            first_day_of_current_month=first_day_of_current_month,
+            last_day_of_current_month=last_day_of_current_month,
         )
-
-        result = await self._session.execute(query)
-        return result.scalars().fetchall()

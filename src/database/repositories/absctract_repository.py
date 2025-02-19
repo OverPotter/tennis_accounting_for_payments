@@ -1,7 +1,8 @@
 from abc import ABC
+from datetime import datetime
 from typing import Generic, Sequence, Type
 
-from sqlalchemy import delete
+from sqlalchemy import delete, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -35,3 +36,36 @@ class AbstractRepository(ABC, Generic[MODEL_TYPE]):
     async def delete(self, **kwargs) -> None:
         query = delete(self._model).filter_by(**kwargs)
         await self._session.execute(query)
+
+    async def get_all_by_client_up_to_date(
+        self, client_id: int, date_field: str, until_what_month: datetime.date
+    ) -> Sequence[MODEL_TYPE]:
+        query = (
+            select(self._model)
+            .filter(
+                getattr(self._model, "client_id") == client_id,
+                getattr(self._model, date_field) < until_what_month,
+            )
+            .order_by(desc(getattr(self._model, date_field)))
+        )
+        result = await self._session.execute(query)
+        return result.scalars().fetchall()
+
+    async def get_monthly_client_entries(
+        self,
+        client_id: int,
+        date_field: str,
+        first_day_of_current_month: datetime.date,
+        last_day_of_current_month: datetime.date,
+    ) -> Sequence[MODEL_TYPE]:
+        query = (
+            select(self._model)
+            .filter(
+                getattr(self._model, "client_id") == client_id,
+                getattr(self._model, date_field) >= first_day_of_current_month,
+                getattr(self._model, date_field) <= last_day_of_current_month,
+            )
+            .order_by(desc(getattr(self._model, date_field)))
+        )
+        result = await self._session.execute(query)
+        return result.scalars().fetchall()
