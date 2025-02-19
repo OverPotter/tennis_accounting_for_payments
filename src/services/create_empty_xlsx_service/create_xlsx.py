@@ -18,7 +18,7 @@ from src.constants.column_widths import (
 from src.constants.xlsx_config import (
     XLSX_FILE_NAME,
     XLSX_LAST_SUB_HEADER,
-    XLSX_SUB_HEADERS,
+    XLSX_SUB_HEADERS, HEADER_WITH_DATE_NAME,
 )
 from src.services.create_empty_xlsx_service.abc import (
     AbstractCreateEmptyTableService,
@@ -81,7 +81,7 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
         self._set_cell(
             ws, row=1, column=1, value=current_month_name.capitalize()
         )
-        self._set_cell(ws, row=1, column=7, value="Дата")
+        self._set_cell(ws, row=1, column=7, value=HEADER_WITH_DATE_NAME)
         self._set_cell(
             ws,
             row=1,
