@@ -1,5 +1,4 @@
 from src.database.repositories.client_repository import ClientRepository
-from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
@@ -26,13 +25,6 @@ class RepositoryGetClientVisitsInSomeMonthsService(
                 client_name=client_name
             )
         )
-
-        if not client_visits:
-            raise EntityDoesntExistException(
-                key="name",
-                value=client_name,
-                entity_name="Client",
-            )
 
         return ClientWithMonthlyVisitsResponse(
             id=client_visits[0][0].id,
