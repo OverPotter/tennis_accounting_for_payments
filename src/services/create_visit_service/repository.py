@@ -5,7 +5,6 @@ from src.events.abc import AbstractSubject
 from src.schemas.payload.visit.base import VisitBasePayloadWithNames
 from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.create_visit_service.abc import AbstractCreateVisitsService
-from src.utils.get_entity import get_entity
 
 
 class RepositoryCreateVisitsService(AbstractCreateVisitsService):
@@ -25,16 +24,12 @@ class RepositoryCreateVisitsService(AbstractCreateVisitsService):
         subject: AbstractSubject[VisitBaseResponse] | None = None,
     ) -> VisitBaseResponse:
 
-        client = await get_entity(
-            repository=self._client_repository,
-            name=payload.client_name,
-            entity_name="Client",
+        client = await self._client_repository.get_or_raise_by_name(
+            name=payload.client_name
         )
 
-        coach = await get_entity(
-            repository=self._coach_repository,
-            name=payload.coach_name,
-            entity_name="Coach",
+        coach = await self._coach_repository.get_or_raise_by_name(
+            name=payload.coach_name
         )
 
         visit = await self._visits_repository.create(

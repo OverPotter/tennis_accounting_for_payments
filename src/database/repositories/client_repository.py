@@ -5,10 +5,21 @@ from sqlalchemy.orm import joinedload
 
 from src.database.models.models import ClientModel, PaymentModel, VisitModel
 from src.database.repositories.absctract_repository import AbstractRepository
+from src.exceptions.entity_exceptions import EntityDoesntExistException
 
 
 class ClientRepository(AbstractRepository[ClientModel]):
     _model = ClientModel
+
+    async def get_or_raise_by_name(self, name: str) -> _model:
+        entity = await self.get(name=name)
+        if not entity:
+            raise EntityDoesntExistException(
+                key=self._model.name.key,
+                value=name,
+                entity_name=self._model.__tablename__,
+            )
+        return entity
 
     async def get_user_with_number_of_tennis_training_available(
         self, client_name: str

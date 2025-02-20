@@ -4,7 +4,6 @@ from src.events.abc import AbstractSubject
 from src.schemas.payload.payment.base import PaymentBasePayloadWithName
 from src.schemas.response.payment.base import PaymentBaseResponse
 from src.services.create_payment_service.abc import AbstractCreatePaymentService
-from src.utils.get_entity import get_entity
 
 
 class RepositoryPaymentService(AbstractCreatePaymentService):
@@ -22,10 +21,8 @@ class RepositoryPaymentService(AbstractCreatePaymentService):
         subject: AbstractSubject[PaymentBaseResponse] | None = None,
     ) -> PaymentBaseResponse:
 
-        client = await get_entity(
-            repository=self._client_repository,
-            name=payload.client_name,
-            entity_name="Client",
+        client = await self._client_repository.get_or_raise_by_name(
+            name=payload.client_name
         )
 
         payment = await self._payment_repository.create(
