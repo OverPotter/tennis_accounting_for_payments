@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Type
 
 from sqlalchemy import Row, and_, func, select, text
 from sqlalchemy.orm import joinedload
@@ -33,41 +33,39 @@ class ClientRepository(AbstractRepository[ClientModel]):
         result = await self._session.execute(query)
         return result.unique().scalar_one_or_none()
 
+    async def _get_client_data_in_last_3_months(
+        self,
+        related_model: Type[PaymentModel | VisitModel],
+        client_name: str,
+        date_field: str,
+    ) -> Sequence[Row[tuple[ClientModel, PaymentModel | VisitModel]]]:
+
+        query = (
+            select(ClientModel, related_model)
+            .join(related_model, ClientModel.id == related_model.client_id)
+            .where(
+                and_(
+                    getattr(related_model, date_field)
+                    >= func.now() - text("INTERVAL '3 MONTH'"),
+                    ClientModel.name == client_name,
+                )
+            )
+            .order_by(getattr(related_model, date_field).desc())
+        )
+
+        result = await self._session.execute(query)
+        return result.fetchall()
+
     async def get_client_visits_in_3_months(
         self, client_name: str
     ) -> Sequence[Row[tuple[ClientModel, VisitModel]]]:
-        query = (
-            select(ClientModel, VisitModel)
-            .join(VisitModel, ClientModel.id == VisitModel.client_id)
-            .where(
-                and_(
-                    VisitModel.visit_datetime
-                    >= func.now() - text("INTERVAL '3 MONTH'"),
-                    ClientModel.name == client_name,
-                )
-            )
-            .order_by(VisitModel.visit_datetime.desc())
+        return await self._get_client_data_in_last_3_months(
+            VisitModel, client_name, "visit_datetime"
         )
 
-        result = await self._session.execute(query)
-        return result.fetchall()
-
-    # todo: DRY
     async def get_client_payments_in_3_months(
         self, client_name: str
     ) -> Sequence[Row[tuple[ClientModel, PaymentModel]]]:
-        query = (
-            select(ClientModel, PaymentModel)
-            .join(PaymentModel, ClientModel.id == PaymentModel.client_id)
-            .where(
-                and_(
-                    PaymentModel.payment_date
-                    >= func.now() - text("INTERVAL '3 MONTH'"),
-                    ClientModel.name == client_name,
-                )
-            )
-            .order_by(PaymentModel.payment_date.desc())
+        return await self._get_client_data_in_last_3_months(
+            PaymentModel, client_name, "payment_date"
         )
-
-        result = await self._session.execute(query)
-        return result.fetchall()
