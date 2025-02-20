@@ -60,12 +60,16 @@ class ClientRepository(AbstractRepository[ClientModel]):
         self, client_name: str
     ) -> Sequence[Row[tuple[ClientModel, VisitModel]]]:
         return await self._get_client_data_in_last_3_months(
-            VisitModel, client_name, "visit_datetime"
+            related_model=VisitModel,
+            client_name=client_name,
+            date_field=VisitModel.visit_datetime.key,
         )
 
     async def get_client_payments_in_3_months(
         self, client_name: str
     ) -> Sequence[Row[tuple[ClientModel, PaymentModel]]]:
         return await self._get_client_data_in_last_3_months(
-            PaymentModel, client_name, "payment_date"
+            related_model=PaymentModel,
+            client_name=client_name,
+            date_field=PaymentModel.payment_date.key,
         )
