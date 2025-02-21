@@ -1,5 +1,4 @@
 from src.database.repositories.client_repository import ClientRepository
-from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.schemas.response.client.client_with_training_number import (
     ClientWithTrainingNumberResponse,
 )
@@ -26,13 +25,6 @@ class RepositoryGetNumberOfTennisTrainingAvailableService(
         client = await self._client_repository.get_user_with_number_of_tennis_training_available(
             client_name=client_name
         )
-
-        if not client:
-            raise EntityDoesntExistException(
-                key="name",
-                value=client_name,
-                entity_name="Client",
-            )
 
         return ClientWithTrainingNumberResponse(
             id=client.id,

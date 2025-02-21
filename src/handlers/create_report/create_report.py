@@ -10,6 +10,7 @@ from src.services.create_empty_xlsx_service.abc import (
 )
 from src.services.fill_in_xlsx_service.abc import AbstractFillInXlsxService
 from src.services.send_report_service.abc import AbstractSendReportService
+from src.utils.validators.validate_name import validate_full_name
 
 
 class CreateReportCommandHandler(BaseCommandHandler):
@@ -28,13 +29,17 @@ class CreateReportCommandHandler(BaseCommandHandler):
 
     @error_handler
     async def handle(self, message: types.Message) -> None:
+        coach_name = validate_full_name(message.text)
+
         report_path = await self._create_empty_xlsx_service.create_xlsx_table()
         self._logger.debug(
             f"An empty file for the report has been created: {report_path}."
         )
 
         clients_data = (
-            await self._collect_clients_data_service.collect_clients_data()
+            await self._collect_clients_data_service.collect_clients_data(
+                coach_name=coach_name
+            )
         )
         self._logger.debug("Customer data has been collected.")
 

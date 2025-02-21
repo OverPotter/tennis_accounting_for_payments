@@ -16,9 +16,10 @@ from src.constants.column_widths import (
     PAYMENT_AMOUNT_COLUMN_WIDTH,
 )
 from src.constants.xlsx_config import (
+    HEADER_WITH_DATE_NAME,
     XLSX_FILE_NAME,
     XLSX_LAST_SUB_HEADER,
-    XLSX_SUB_HEADERS, HEADER_WITH_DATE_NAME,
+    XLSX_SUB_HEADERS,
 )
 from src.services.create_empty_xlsx_service.abc import (
     AbstractCreateEmptyTableService,
