@@ -34,8 +34,6 @@ ERROR_MAP: Dict[Type[Exception], str] = {
     InvalidPaymentDataException: "Некорректные данные об оплате. Проверьте правильность заполнения информации.",
     EntityAlreadyExistException: "Такой объект уже существует.",
     EntityDoesntExistException: "Запрашиваемый объект не найден.",
-    # todo: create custom exception
-    IndexError: "Не хватает данных для обработки запроса. Проверьте ввод.",
     OperationalError: "Ошибка соединения с базой данных. Попробуйте позже или сообщите администратору.",
     UserNotRegisteredError: "Вы не зарегистрированы в системе.",
     RolePermissionError: "Отказ в доступе: у вас нет прав для выполнения этой операции.",

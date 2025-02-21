@@ -13,13 +13,18 @@ class NumberOfTennisTrainingAvailableRepository(
     _model = NumberOfTennisTrainingAvailableModel
 
     async def update(
-        self, client_id: int, training_type: TrainingTypesEnum, **kwargs
+        self,
+        client_id: int,
+        coach_id: int,
+        training_type: TrainingTypesEnum,
+        **kwargs
     ) -> Callable[[], int]:
         query = (
             update(NumberOfTennisTrainingAvailableModel)
             .where(
                 and_(
                     NumberOfTennisTrainingAvailableModel.client_id == client_id,
+                    NumberOfTennisTrainingAvailableModel.coach_id == coach_id,
                     NumberOfTennisTrainingAvailableModel.training_type
                     == training_type,
                 )
@@ -29,12 +34,13 @@ class NumberOfTennisTrainingAvailableRepository(
         result = await self._session.execute(query)
         return result.rowcount
 
-    async def get_number_by_client_id_and_training_type(
-        self, client_id: int, training_type: TrainingTypesEnum
+    async def get_number_by_constraint_pk(
+        self, client_id: int, coach_id: int, training_type: TrainingTypesEnum
     ) -> _model | None:
         query = select(NumberOfTennisTrainingAvailableModel).where(
             and_(
                 NumberOfTennisTrainingAvailableModel.client_id == client_id,
+                NumberOfTennisTrainingAvailableModel.coach_id == coach_id,
                 NumberOfTennisTrainingAvailableModel.training_type
                 == training_type,
             )

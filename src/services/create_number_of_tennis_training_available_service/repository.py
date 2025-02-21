@@ -3,7 +3,9 @@ from pydantic import TypeAdapter
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
-from src.schemas.enums.training_types import TrainingTypesEnum
+from src.schemas.payload.number_of_tennis_training.base import (
+    NumberOfTennisTrainingBasePayload,
+)
 from src.schemas.response.number_of_tennis_training_available.base import (
     NumberOfTennisTrainingAvailableBaseResponse,
 )
@@ -24,17 +26,12 @@ class RepositoryCreateNumberOfTennisTrainingAvailableService(
         )
 
     async def create_number_of_tennis_training_available(
-        self,
-        client_id: int,
-        number_of_training: int,
-        training_type: TrainingTypesEnum,
+        self, payload: NumberOfTennisTrainingBasePayload
     ) -> NumberOfTennisTrainingAvailableBaseResponse:
 
         number_of_tennis_training = (
             await self._number_of_tennis_training_available_repository.create(
-                client_id=client_id,
-                number_of_training=number_of_training,
-                training_type=training_type,
+                **payload.model_dump()
             )
         )
         created_number_of_tennis_training = TypeAdapter(NumberOfTennisTrainingAvailableBaseResponse).validate_python(number_of_tennis_training)  # type: ignore

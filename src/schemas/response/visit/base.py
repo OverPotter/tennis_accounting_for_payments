@@ -6,5 +6,6 @@ from src.schemas.response.base import BaseResponse
 
 class VisitBaseResponse(BaseResponse):
     client_id: int
+    coach_id: int
     visit_datetime: datetime
     training_type: TrainingTypesEnum
