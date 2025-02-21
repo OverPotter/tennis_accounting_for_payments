@@ -8,3 +8,9 @@ class PaymentBaseResponse(BaseResponse):
     coach_id: int
     payment_date: date
     amount: float
+
+
+class PaymentWithCoachNameResponse(BaseResponse):
+    coach_name: str
+    payment_date: date
+    amount: float

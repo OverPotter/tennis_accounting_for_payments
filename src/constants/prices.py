@@ -8,3 +8,4 @@ PRICE_LIST = {
     70.0: (1, TrainingTypesEnum.SPLIT_TRAINING),
     130.0: (1, TrainingTypesEnum.INDIVIDUAL_TRAINING),
 }
+PAYMENT_CURRENCY = "BYN"
