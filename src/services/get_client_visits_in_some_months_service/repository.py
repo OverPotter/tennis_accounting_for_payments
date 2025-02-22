@@ -2,9 +2,7 @@ from src.database.repositories.client_repository import ClientRepository
 from src.schemas.response.client.monthly_visits import (
     ClientWithMonthlyVisitsResponse,
 )
-from src.schemas.response.visit.base import (
-    VisitWithCoachNameResponse,
-)
+from src.schemas.response.visit.base import VisitWithCoachNameResponse
 from src.services.get_client_visits_in_some_months_service.abc import (
     AbstractGetClientVisitsInSomeMonthsService,
 )
