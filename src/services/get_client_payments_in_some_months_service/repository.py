@@ -2,9 +2,7 @@ from src.database.repositories.client_repository import ClientRepository
 from src.schemas.response.client.monthly_payments import (
     ClientWithMonthlyPaymentsToCoachesResponse,
 )
-from src.schemas.response.payment.base import (
-    PaymentWithCoachNameResponse,
-)
+from src.schemas.response.payment.base import PaymentWithCoachNameResponse
 from src.services.get_client_payments_in_some_months_service.abc import (
     AbstractGetClientPaymentsInSomeMonthsService,
 )
