@@ -1,10 +1,9 @@
 from src.database.repositories.client_repository import ClientRepository
-from src.exceptions.entity_exceptions import EntityDoesntExistException
 from src.schemas.response.client.client_with_training_number import (
     ClientWithTrainingNumberResponse,
 )
 from src.schemas.response.number_of_tennis_training_available.base import (
-    NumberOfTennisTrainingAvailableBaseResponse,
+    NumberOfTennisTrainingWithCoachNameResponse,
 )
 from src.services.get_number_of_tennis_training_available_service.abc import (
     AbstractGetNumberOfTennisTrainingAvailableService,
@@ -27,19 +26,12 @@ class RepositoryGetNumberOfTennisTrainingAvailableService(
             client_name=client_name
         )
 
-        if not client:
-            raise EntityDoesntExistException(
-                key="name",
-                value=client_name,
-                entity_name="Client",
-            )
-
         return ClientWithTrainingNumberResponse(
             id=client.id,
             name=client.name,
             number_of_trainings_available=[
-                NumberOfTennisTrainingAvailableBaseResponse(
-                    client_id=number.client_id,
+                NumberOfTennisTrainingWithCoachNameResponse(
+                    coach_name=number.coach.name,
                     number_of_training=number.number_of_training,
                     training_type=number.training_type,
                 )

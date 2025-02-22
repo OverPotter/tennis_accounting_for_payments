@@ -1,4 +1,5 @@
 XLSX_FILE_NAME = "Таблица_Посещений"
+HEADER_WITH_DATE_NAME = "Дата"
 XLSX_SUB_HEADERS = [
     "ФИО",
     "Остаточный переход количество",

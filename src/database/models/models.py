@@ -43,19 +43,33 @@ class CoachModel(BaseIDModel):
     visits: Mapped[List["VisitModel"]] = relationship(
         "VisitModel", back_populates="coach"
     )
+    clients_training_balance: Mapped[
+        List["NumberOfTennisTrainingAvailableModel"]
+    ] = relationship(
+        "NumberOfTennisTrainingAvailableModel", back_populates="coach"
+    )
+    payments: Mapped[List["PaymentModel"]] = relationship(
+        "PaymentModel", back_populates="coach"
+    )
 
 
 class NumberOfTennisTrainingAvailableModel(Base):
     __tablename__ = "number_of_tennis_training_available"
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
+    coach_id: Mapped[int] = mapped_column(ForeignKey("coaches.id"))
     number_of_training: Mapped[int] = mapped_column(Integer)
     training_type: Mapped[TrainingTypesEnum] = mapped_column(nullable=False)
 
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="number_of_trainings_available"
     )
+    coach: Mapped["CoachModel"] = relationship(
+        "CoachModel", back_populates="clients_training_balance"
+    )
 
-    __table_args__ = (PrimaryKeyConstraint("client_id", "training_type"),)
+    __table_args__ = (
+        PrimaryKeyConstraint("client_id", "coach_id", "training_type"),
+    )
 
 
 class VisitModel(BaseIDModel):
@@ -76,10 +90,15 @@ class VisitModel(BaseIDModel):
 class PaymentModel(BaseIDModel):
     __tablename__ = "payments"
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"))
+    coach_id: Mapped[int] = mapped_column(ForeignKey("coaches.id"))
     payment_date: Mapped[datetime.date] = mapped_column(Date)
     amount: Mapped[float] = mapped_column(Float)
+
     client: Mapped["ClientModel"] = relationship(
         "ClientModel", back_populates="payments"
+    )
+    coach: Mapped["CoachModel"] = relationship(
+        "CoachModel", back_populates="payments"
     )
 
 

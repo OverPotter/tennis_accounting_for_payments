@@ -1,5 +1,3 @@
-from pydantic import TypeAdapter
-
 from src.database.repositories.payment_repository import PaymentRepository
 from src.schemas.response.payment.base import PaymentBaseResponse
 from src.services.get_paid_client_training_service.abc import (
@@ -27,11 +25,13 @@ class RepositoryGetPaidClientTrainingService(
         self._payment_repository = payment_repository
 
     async def get_all_client_paid_training_up_to_current_month(
-        self, client_id: int
+        self, client_id: int, coach_name: str | None = None
     ) -> int:
         until_what_month = get_first_day_of_current_month()
         client_paid_info = await self._payment_repository.get_all_paid_client_training_up_to_current_month(
-            client_id=client_id, until_what_month=until_what_month
+            client_id=client_id,
+            until_what_month=until_what_month,
+            coach_name=coach_name,
         )
 
         paid_training_count = 0
@@ -43,7 +43,7 @@ class RepositoryGetPaidClientTrainingService(
         return paid_training_count
 
     async def get_monthly_paid_client_trainings(
-        self, client_id: int
+        self, client_id: int, coach_name: str | None = None
     ) -> list[PaymentBaseResponse]:
         first_day_of_current_month = get_first_day_of_current_month()
         last_day_of_current_month = get_last_day_of_current_month(
@@ -53,9 +53,10 @@ class RepositoryGetPaidClientTrainingService(
             client_id=client_id,
             first_day_of_current_month=first_day_of_current_month,
             last_day_of_current_month=last_day_of_current_month,
+            coach_name=coach_name,
         )
 
         return [
-            TypeAdapter(PaymentBaseResponse).validate_python(paid_info)
+            PaymentBaseResponse.model_validate(paid_info)
             for paid_info in paid_client_trainings_info_for_current_month
         ]

@@ -21,11 +21,12 @@ entity "coaches" {
 
 entity "number_of_tennis_training_available" as tennis_balances {
     *client_id : int <<FK>>
+    *coach_id : int <<FK>>
     *training_type : TrainingTypesEnum
     --
     number_of_training : int
     --
-    CONSTRAINT PK (client_id, training_type)
+    CONSTRAINT PK (client_id, coach_id, training_type)
 }
 
 entity "visits" as visits {
@@ -40,14 +41,18 @@ entity "visits" as visits {
 entity "payments" as payments {
     *id : int <<PK>>
     *client_id : int <<FK>>
+    *coach_id : int <<FK>>
     --
     payment_date : date
     amount : float
 }
 
-users ||--o{ tennis_balances : "number_of_trainings_available"
-users ||--o{ visits : "visits"
-users ||--o{ payments : "payments"
-coaches ||--o{ visits : "conducted_trainings"
+users ||--o{ tennis_balances
+users ||--o{ visits
+users ||--o{ payments
+
+coaches ||--o{ visits
+coaches ||--o{ tennis_balances
+coaches ||--o{ payments
 
 @enduml

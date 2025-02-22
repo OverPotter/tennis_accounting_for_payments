@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
-from src.schemas.enums.training_types import TrainingTypesEnum
+from src.schemas.payload.number_of_tennis_training.base import (
+    NumberOfTennisTrainingBasePayload,
+)
 from src.schemas.response.number_of_tennis_training_available.base import (
     NumberOfTennisTrainingAvailableBaseResponse,
 )
@@ -9,8 +11,5 @@ from src.schemas.response.number_of_tennis_training_available.base import (
 class AbstractCreateNumberOfTennisTrainingAvailableService(ABC):
     @abstractmethod
     async def create_number_of_tennis_training_available(
-        self,
-        client_id: int,
-        number_of_training: int,
-        training_type: TrainingTypesEnum,
+        self, payload: NumberOfTennisTrainingBasePayload
     ) -> NumberOfTennisTrainingAvailableBaseResponse: ...

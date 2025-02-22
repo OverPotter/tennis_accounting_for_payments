@@ -106,6 +106,7 @@ async def handle_payment_command(message: types.Message):
         handler = AddPaymentsCommandHandler(
             create_payment_service=RepositoryPaymentService(
                 client_repository=repository_manager.get_client_repository(),
+                coach_repository=repository_manager.get_coach_repository(),
                 payment_repository=repository_manager.get_payment_repository(),
             ),
         )

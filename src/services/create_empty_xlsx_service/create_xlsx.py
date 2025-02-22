@@ -16,6 +16,7 @@ from src.constants.column_widths import (
     PAYMENT_AMOUNT_COLUMN_WIDTH,
 )
 from src.constants.xlsx_config import (
+    HEADER_WITH_DATE_NAME,
     XLSX_FILE_NAME,
     XLSX_LAST_SUB_HEADER,
     XLSX_SUB_HEADERS,
@@ -81,7 +82,7 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
         self._set_cell(
             ws, row=1, column=1, value=current_month_name.capitalize()
         )
-        self._set_cell(ws, row=1, column=7, value="Дата")
+        self._set_cell(ws, row=1, column=7, value=HEADER_WITH_DATE_NAME)
         self._set_cell(
             ws,
             row=1,
