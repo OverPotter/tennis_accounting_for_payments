@@ -1,4 +1,3 @@
-import locale
 import os
 import tempfile
 
@@ -24,7 +23,9 @@ from src.constants.xlsx_config import (
 from src.services.create_empty_xlsx_service.abc import (
     AbstractCreateEmptyTableService,
 )
-from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
+from src.utils.time_helpers.get_current_month_details import (
+    get_current_month_details,
+)
 
 
 class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
@@ -44,22 +45,19 @@ class CreateEmptyExcelTableService(AbstractCreateEmptyTableService):
         )
 
     async def create_xlsx_table(self) -> str:
-        number_days_of_in_month, current_month_name, current_year = (
-            get_number_of_days_in_month()
-        )
-        locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
+        current_month_info = get_current_month_details()
 
-        report_filename = (
-            f"{XLSX_FILE_NAME}_{current_month_name}_{current_year}.xlsx"
-        )
+        report_filename = f"{XLSX_FILE_NAME}_{current_month_info.name}_{current_month_info.year}.xlsx"
         report_path = os.path.join(tempfile.gettempdir(), report_filename)
 
         wb = Workbook()
         ws = wb.active
 
-        self._create_headers(ws, current_month_name, number_days_of_in_month)
-        self._create_sub_headers(ws, number_days_of_in_month)
-        self._set_column_widths(ws, number_days_of_in_month)
+        self._create_headers(
+            ws, current_month_info.name, current_month_info.total_days
+        )
+        self._create_sub_headers(ws, current_month_info.total_days)
+        self._set_column_widths(ws, current_month_info.total_days)
 
         wb.save(report_path)
         return report_path

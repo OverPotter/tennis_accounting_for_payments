@@ -3,10 +3,10 @@ from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.get_client_visits_service.abc import (
     AbstractGetClientVisitsService,
 )
-from src.utils.get_first_day_of_current_month import (
+from src.utils.time_helpers.get_first_day_of_current_month import (
     get_first_day_of_current_month,
 )
-from src.utils.get_last_day_of_current_month import (
+from src.utils.time_helpers.get_last_day_of_current_month import (
     get_last_day_of_current_month,
 )
 

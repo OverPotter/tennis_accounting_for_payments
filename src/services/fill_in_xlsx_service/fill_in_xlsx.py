@@ -18,17 +18,24 @@ from src.constants.offsets import (
 from src.schemas.response.client.monthly_full_info_about_client import (
     MonthlyFullInfoAboutClientResponse,
 )
+from src.schemas.response.month.base import MonthDetailsBaseResponse
 from src.schemas.response.payment.base import PaymentBaseResponse
 from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.fill_in_xlsx_service.abc import AbstractFillInXlsxService
-from src.utils.get_number_of_days_in_month import get_number_of_days_in_month
 from src.utils.get_training_type_and_number_by_amount import (
     get_training_type_and_number_by_amount,
+)
+from src.utils.time_helpers.get_current_month_details import (
+    get_current_month_details,
 )
 
 
 class FillInXlsxService(AbstractFillInXlsxService):
     def __init__(self) -> None:
+        self._current_month_info: MonthDetailsBaseResponse = (
+            get_current_month_details()
+        )
+
         self._light_green_fill = PatternFill(
             start_color=POSITIVE_TRAINING_COUNT_COLOR,
             end_color=POSITIVE_TRAINING_COUNT_COLOR,
@@ -108,7 +115,7 @@ class FillInXlsxService(AbstractFillInXlsxService):
             ws.cell(row=row, column=6 + day, value=count)
 
     def _fill_visits_end(self, ws: Worksheet, row: int, visits: int) -> None:
-        last_col = 6 + get_number_of_days_in_month()[0] + 1
+        last_col = 6 + self._current_month_info.total_days + 1
         cell = ws.cell(row=row, column=last_col, value=visits)
         cell.fill = self._get_fill_color(visits)
 
@@ -141,7 +148,7 @@ class FillInXlsxService(AbstractFillInXlsxService):
     def _apply_block_format(
         self, ws: Worksheet, block_start: int, block_end: int
     ) -> None:
-        last_col = 6 + get_number_of_days_in_month()[0] + 1
+        last_col = 6 + self._current_month_info.total_days + 1
 
         for r in range(block_start, block_end + 1):
             ws.row_dimensions[r].height = CELL_WITH_CLIENTS_DATA_HEIGHT
