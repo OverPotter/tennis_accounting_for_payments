@@ -3,7 +3,12 @@ from typing import Sequence, Type
 from sqlalchemy import Row, and_, func, select, text
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel, PaymentModel, VisitModel
+from src.database.models.models import (
+    ClientModel,
+    NumberOfTennisTrainingAvailableModel,
+    PaymentModel,
+    VisitModel,
+)
 from src.database.repositories.absctract_repository import AbstractRepository
 from src.utils.check_entity_exists import (
     check_entity_does_not_exist_by_name,
@@ -32,8 +37,12 @@ class ClientRepository(AbstractRepository[ClientModel]):
         self, client_name: str
     ) -> _model:
         query = (
-            select(ClientModel)
-            .options(joinedload(ClientModel.number_of_trainings_available))
+            select(self._model)
+            .options(
+                joinedload(self._model.number_of_trainings_available).options(
+                    joinedload(NumberOfTennisTrainingAvailableModel.coach)
+                )
+            )
             .filter_by(name=client_name)
         )
 
@@ -72,15 +81,16 @@ class ClientRepository(AbstractRepository[ClientModel]):
     ) -> Sequence[Row[tuple[_model, PaymentModel | VisitModel]]]:
 
         query = (
-            select(ClientModel, related_model)
-            .join(related_model, ClientModel.id == related_model.client_id)
+            select(self._model, related_model)
+            .join(related_model, self._model.id == related_model.client_id)
             .where(
                 and_(
                     getattr(related_model, date_field)
                     >= func.now() - text("INTERVAL '3 MONTH'"),
-                    ClientModel.name == client_name,
+                    self._model.name == client_name,
                 )
             )
+            .options(joinedload(related_model.coach))
             .order_by(getattr(related_model, date_field).desc())
         )
 

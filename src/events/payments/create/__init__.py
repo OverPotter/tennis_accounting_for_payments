@@ -1,13 +1,19 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from src.database.repositories.manager import orm_repository_manager_factory
+from src.database.repositories.manager import (
+    OrmRepositoryManager,
+    orm_repository_manager_factory,
+)
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
 from src.events.abc import AbstractSubject
 from src.events.base import BaseSubject
 from src.events.utils import observer
+from src.schemas.payload.number_of_tennis_training.base import (
+    NumberOfTennisTrainingBasePayload,
+)
 from src.schemas.response.payment.base import PaymentBaseResponse
 from src.services.create_number_of_tennis_training_available_service.abc import (
     AbstractCreateNumberOfTennisTrainingAvailableService,
@@ -15,7 +21,7 @@ from src.services.create_number_of_tennis_training_available_service.abc import 
 from src.services.create_number_of_tennis_training_available_service.repository import (
     RepositoryCreateNumberOfTennisTrainingAvailableService,
 )
-from src.services.logging_service.logging_service import logger_factory
+from src.services.logging_service.logging_service import Logger, logger_factory
 from src.utils.get_training_type_and_number_by_amount import (
     get_training_type_and_number_by_amount,
 )
@@ -28,8 +34,8 @@ async def payment_creation_subject_context() -> (
     payment_creation_subject: AbstractSubject[PaymentBaseResponse] = (
         BaseSubject()
     )
-    logger = logger_factory()
-    repository_manager = orm_repository_manager_factory()
+    logger: Logger = logger_factory()
+    repository_manager: OrmRepositoryManager = orm_repository_manager_factory()
 
     @observer(payment_creation_subject)
     async def _(subject: AbstractSubject[PaymentBaseResponse]):
@@ -46,11 +52,11 @@ async def payment_creation_subject_context() -> (
                 repository: NumberOfTennisTrainingAvailableRepository = (
                     repository_manager.get_number_of_tennis_training_available_repository()
                 )
-                result = (
-                    await repository.get_number_by_client_id_and_training_type(
-                        client_id=new_payment.client_id,
-                        training_type=training_type,
-                    )
+
+                result = await repository.get_number_by_constraint_pk(
+                    client_id=new_payment.client_id,
+                    coach_id=new_payment.coach_id,
+                    training_type=training_type,
                 )
 
                 if result:
@@ -59,11 +65,12 @@ async def payment_creation_subject_context() -> (
                     )
                     updated_rowcount = await repository.update(
                         client_id=new_payment.client_id,
+                        coach_id=new_payment.coach_id,
                         training_type=training_type,
                         number_of_training=number_of_training,
                     )
                     logger.info(
-                        f"[Payment Observer] Update {training_type.value} training for user with id={new_payment.client_id}."
+                        f"[Payment Observer] Coach={new_payment.coach_id}: Update {training_type} training for user with id={new_payment.client_id}."
                     )
 
                     if updated_rowcount == 0:
@@ -76,13 +83,22 @@ async def payment_creation_subject_context() -> (
                     ) = RepositoryCreateNumberOfTennisTrainingAvailableService(
                         number_of_tennis_training_available_repository=repository
                     )
+
+                    number_of_tennis_training_payload = (
+                        NumberOfTennisTrainingBasePayload(
+                            client_id=new_payment.client_id,
+                            coach_id=new_payment.coach_id,
+                            number_of_training=number_of_training_for_price,
+                            training_type=training_type,
+                        )
+                    )
+
                     created_entity = await service.create_number_of_tennis_training_available(
-                        client_id=new_payment.client_id,
-                        number_of_training=number_of_training_for_price,
-                        training_type=training_type,
+                        payload=number_of_tennis_training_payload
                     )
                     logger.info(
-                        f"[Payment Observer] Create new available training for user with id={new_payment.client_id}."
+                        f"[Payment Observer] Coach={new_payment.coach_id}: "
+                        f"Create new available training for user with id={new_payment.client_id}."
                     )
                     if not created_entity:
                         logger.warning(

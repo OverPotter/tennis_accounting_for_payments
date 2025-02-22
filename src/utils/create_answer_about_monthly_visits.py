@@ -8,7 +8,7 @@ def create_answer_about_monthly_visits(
 ) -> str:
     visits_count = len(data.visits)
     visits_info = "".join(
-        f"{visit.visit_datetime.strftime('%d.%m.%Y')}: {visit.training_type.value}\n"
+        f"{visit.visit_datetime.strftime('%d.%m.%Y')}: {visit.training_type.value} у тренера {visit.coach_name}\n"
         for visit in data.visits
     )
     times_word = _pluralize_times(len(data.visits))

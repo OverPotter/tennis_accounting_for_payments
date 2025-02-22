@@ -1,13 +1,19 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from src.database.repositories.manager import orm_repository_manager_factory
+from src.database.repositories.manager import (
+    OrmRepositoryManager,
+    orm_repository_manager_factory,
+)
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
 from src.events.abc import AbstractSubject
 from src.events.base import BaseSubject
 from src.events.utils import observer
+from src.schemas.payload.number_of_tennis_training.base import (
+    NumberOfTennisTrainingBasePayload,
+)
 from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.create_number_of_tennis_training_available_service.abc import (
     AbstractCreateNumberOfTennisTrainingAvailableService,
@@ -15,7 +21,7 @@ from src.services.create_number_of_tennis_training_available_service.abc import 
 from src.services.create_number_of_tennis_training_available_service.repository import (
     RepositoryCreateNumberOfTennisTrainingAvailableService,
 )
-from src.services.logging_service.logging_service import logger_factory
+from src.services.logging_service.logging_service import Logger, logger_factory
 
 
 @asynccontextmanager
@@ -23,8 +29,8 @@ async def visit_creation_subject_context() -> (
     AsyncGenerator[AbstractSubject[VisitBaseResponse], None]
 ):
     visit_creation_subject: AbstractSubject[VisitBaseResponse] = BaseSubject()
-    logger = logger_factory()
-    repository_manager = orm_repository_manager_factory()
+    logger: Logger = logger_factory()
+    repository_manager: OrmRepositoryManager = orm_repository_manager_factory()
 
     @observer(visit_creation_subject)
     async def _(subject: AbstractSubject[VisitBaseResponse]):
@@ -36,11 +42,10 @@ async def visit_creation_subject_context() -> (
                     repository_manager.get_number_of_tennis_training_available_repository()
                 )
 
-                result = (
-                    await repository.get_number_by_client_id_and_training_type(
-                        client_id=new_visit.client_id,
-                        training_type=new_visit.training_type,
-                    )
+                result = await repository.get_number_by_constraint_pk(
+                    client_id=new_visit.client_id,
+                    coach_id=new_visit.coach_id,
+                    training_type=new_visit.training_type,
                 )
 
                 if result:
@@ -48,6 +53,7 @@ async def visit_creation_subject_context() -> (
 
                     updated_rowcount = await repository.update(
                         client_id=new_visit.client_id,
+                        coach_id=new_visit.coach_id,
                         training_type=new_visit.training_type,
                         number_of_training=number_of_training,
                     )
@@ -66,13 +72,20 @@ async def visit_creation_subject_context() -> (
                         number_of_tennis_training_available_repository=repository
                     )
                     number_of_training_for_new_client = -1
-                    created_entity = await service.create_number_of_tennis_training_available(
+
+                    number_of_tennis_training_payload = NumberOfTennisTrainingBasePayload(
                         client_id=new_visit.client_id,
+                        coach_id=new_visit.coach_id,
                         number_of_training=number_of_training_for_new_client,
                         training_type=new_visit.training_type,
                     )
+
+                    created_entity = await service.create_number_of_tennis_training_available(
+                        payload=number_of_tennis_training_payload
+                    )
                     logger.info(
-                        f"[Visit Observer] Create new training for user with id={new_visit.client_id}."
+                        f"[Visit Observer] Coach={new_visit.coach_id}: "
+                        f"Create new training for user with id={new_visit.client_id}."
                     )
                     if not created_entity:
                         logger.warning(

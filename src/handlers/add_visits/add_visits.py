@@ -30,17 +30,17 @@ class AddVisitsCommandHandler(BaseCommandHandler):
 
                 if visit_created:
                     self._logger.info(
-                        f"Visit created: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
+                        f"{visit_payload.coach_name}: Visit created for Client='{visit_payload.client_name}', Datetime='{visit_payload.visit_datetime}'."
                     )
                     await message.answer(
-                        f"Визит для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name} успешно добавлен."
+                        f"{visit_payload.coach_name}: Визит для клиента {visit_payload.client_name} успешно добавлен."
                     )
                 else:
                     self._logger.warning(
-                        f"Failed to create visit: Client='{visit_payload.client_name}', Coach='{visit_payload.coach_name}', Datetime='{visit_payload.visit_datetime}'."
+                        f"{visit_payload.coach_name}: Failed to create visit for Client='{visit_payload.client_name}', Datetime='{visit_payload.visit_datetime}'."
                     )
                     await message.answer(
-                        f"Ошибка при добавлении визита для клиента {visit_payload.client_name} к тренеру {visit_payload.coach_name}. Сообщите администратору."
+                        f"{visit_payload.coach_name}: Ошибка при добавлении визита для клиента {visit_payload.client_name}. Сообщите администратору."
                     )
 
     @staticmethod
