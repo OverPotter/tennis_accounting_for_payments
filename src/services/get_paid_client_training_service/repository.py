@@ -3,14 +3,14 @@ from src.schemas.response.payment.base import PaymentBaseResponse
 from src.services.get_paid_client_training_service.abc import (
     AbstractGetPaidClientTrainingService,
 )
-from src.utils.get_first_day_of_current_month import (
-    get_first_day_of_current_month,
-)
-from src.utils.get_last_day_of_current_month import (
-    get_last_day_of_current_month,
-)
 from src.utils.get_training_type_and_number_by_amount import (
     get_training_type_and_number_by_amount,
+)
+from src.utils.time_helpers.get_first_day_of_current_month import (
+    get_first_day_of_current_month,
+)
+from src.utils.time_helpers.get_last_day_of_current_month import (
+    get_last_day_of_current_month,
 )
 
 
