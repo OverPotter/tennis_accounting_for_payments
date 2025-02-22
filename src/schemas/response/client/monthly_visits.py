@@ -1,6 +1,8 @@
 from src.schemas.response.client.base import ClientBaseResponse
-from src.schemas.response.visit.base import VisitBaseResponse
+from src.schemas.response.visit.base import (
+    VisitWithCoachNameResponse,
+)
 
 
 class ClientWithMonthlyVisitsResponse(ClientBaseResponse):
-    visits: list[VisitBaseResponse]
+    visits: list[VisitWithCoachNameResponse]

@@ -9,3 +9,9 @@ class VisitBaseResponse(BaseResponse):
     coach_id: int
     visit_datetime: datetime
     training_type: TrainingTypesEnum
+
+
+class VisitWithCoachNameResponse(BaseResponse):
+    coach_name: str
+    visit_datetime: datetime
+    training_type: TrainingTypesEnum
