@@ -1,5 +1,3 @@
-from pydantic import TypeAdapter
-
 from src.database.repositories.number_of_tennis_training_available_repository import (
     NumberOfTennisTrainingAvailableRepository,
 )
@@ -34,6 +32,10 @@ class RepositoryCreateNumberOfTennisTrainingAvailableService(
                 **payload.model_dump()
             )
         )
-        created_number_of_tennis_training = TypeAdapter(NumberOfTennisTrainingAvailableBaseResponse).validate_python(number_of_tennis_training)  # type: ignore
+        created_number_of_tennis_training = (
+            NumberOfTennisTrainingAvailableBaseResponse.model_validate(
+                number_of_tennis_training
+            )
+        )
 
         return created_number_of_tennis_training

@@ -3,7 +3,12 @@ from typing import Sequence, Type
 from sqlalchemy import Row, and_, func, select, text
 from sqlalchemy.orm import joinedload
 
-from src.database.models.models import ClientModel, PaymentModel, VisitModel
+from src.database.models.models import (
+    ClientModel,
+    NumberOfTennisTrainingAvailableModel,
+    PaymentModel,
+    VisitModel,
+)
 from src.database.repositories.absctract_repository import AbstractRepository
 from src.utils.check_entity_exists import (
     check_entity_does_not_exist_by_name,
@@ -33,7 +38,11 @@ class ClientRepository(AbstractRepository[ClientModel]):
     ) -> _model:
         query = (
             select(self._model)
-            .options(joinedload(self._model.number_of_trainings_available))
+            .options(
+                joinedload(self._model.number_of_trainings_available).options(
+                    joinedload(NumberOfTennisTrainingAvailableModel.coach)
+                )
+            )
             .filter_by(name=client_name)
         )
 
