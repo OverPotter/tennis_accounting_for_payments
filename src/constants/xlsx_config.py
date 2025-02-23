@@ -1,5 +1,8 @@
 XLSX_FILE_NAME = "Таблица_Посещений"
+
 HEADER_WITH_DATE_NAME = "Дата"
+XLSX_LAST_SUB_HEADER = "Количество оставшихся тренировок"
+
 XLSX_SUB_HEADERS = [
     "ФИО",
     "Остаточный переход количество",
@@ -7,4 +10,5 @@ XLSX_SUB_HEADERS = [
     "Количество тренировок",
     "Дата оплаты",
 ]
-XLSX_LAST_SUB_HEADER = "Количество оставшихся тренировок"
+
+CELL_WITH_TOTAL_INCOME_NAME = "Общий доход:"

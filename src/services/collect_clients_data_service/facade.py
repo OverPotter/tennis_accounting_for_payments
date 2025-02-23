@@ -3,6 +3,9 @@ from src.schemas.response.client.base import ClientBaseResponse
 from src.schemas.response.client.monthly_full_info_about_client import (
     MonthlyFullInfoAboutClientResponse,
 )
+from src.schemas.response.client.monthly_income_and_clients_data import (
+    MonthlyIncomeAndClientsDataResponse,
+)
 from src.schemas.response.payment.base import PaymentBaseResponse
 from src.schemas.response.visit.base import VisitBaseResponse
 from src.services.collect_clients_data_service.abc import (
@@ -45,10 +48,10 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         )
 
     async def collect_clients_data(
-        self, coach_name: str
-    ) -> list[MonthlyFullInfoAboutClientResponse]:
+        self, coach_name: str, filter_empty: bool = False
+    ) -> MonthlyIncomeAndClientsDataResponse:
         clients = await self._get_all_clients_service.get_all_clients()
-        result = []
+        clients_data = []
 
         for client in clients:
             client_paid_training_count_for_all_time = (
@@ -83,7 +86,7 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
                 paid_monthly_training,
             )
 
-            result.append(
+            clients_data.append(
                 self._create_client_response(
                     client,
                     visits_at_the_beginning_of_the_month,
@@ -93,7 +96,16 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
                 )
             )
 
-        return result
+        total_income = self._calculate_total_income(clients_data=clients_data)
+
+        if filter_empty:
+            clients_data = self._filter_clients_with_payments_or_visits(
+                clients_data=clients_data
+            )
+
+        return MonthlyIncomeAndClientsDataResponse(
+            total_income=total_income, clients_data=clients_data
+        )
 
     async def _get_client_paid_training_count_for_all_time(
         self, client: ClientBaseResponse, coach_name: str | None = None
@@ -158,6 +170,16 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
         )
 
     @staticmethod
+    def _calculate_total_income(
+        clients_data: list[MonthlyFullInfoAboutClientResponse],
+    ) -> float:
+        total_income = 0.0
+        for client in clients_data:
+            for payment in client.monthly_payments:
+                total_income += payment.amount
+        return total_income
+
+    @staticmethod
     def _create_client_response(
         client: ClientBaseResponse,
         visits_at_the_beginning_of_the_month: int,
@@ -173,6 +195,19 @@ class FacadeCollectClientsDataService(AbstractCollectClientsDataService):
             monthly_visits=client_monthly_visits,
             visits_at_the_end_of_the_month=visits_at_the_end_of_the_month,
         )
+
+    @staticmethod
+    def _filter_clients_with_payments_or_visits(
+        clients_data: list[MonthlyFullInfoAboutClientResponse],
+    ) -> list[MonthlyFullInfoAboutClientResponse]:
+        return [
+            client
+            for client in clients_data
+            if client.monthly_payments
+            or client.monthly_visits
+            or client.visits_at_the_beginning_of_the_month != 0
+            or client.visits_at_the_end_of_the_month != 0
+        ]
 
 
 def facade_collect_clients_data_factory(

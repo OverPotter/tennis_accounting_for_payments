@@ -36,15 +36,16 @@ class CreateReportCommandHandler(BaseCommandHandler):
             f"An empty file for the report has been created: {report_path}."
         )
 
-        clients_data = (
+        total_income_and_clients_data = (
             await self._collect_clients_data_service.collect_clients_data(
-                coach_name=coach_name
+                coach_name=coach_name, filter_empty=True
             )
         )
         self._logger.debug("Customer data has been collected.")
 
         self._fill_in_xlsx_service.fill_in_xlsx(
-            clients=clients_data, filename=report_path
+            total_income_and_clients_data=total_income_and_clients_data,
+            filename=report_path,
         )
         self._logger.debug(
             f"The report was created successfully: {report_path}."
