@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
 
-from src.schemas.response.client.monthly_full_info_about_client import (
-    MonthlyFullInfoAboutClientResponse,
+from src.schemas.response.client.monthly_income_and_clients_data import (
+    MonthlyIncomeAndClientsDataResponse,
 )
 
 
 class AbstractFillInXlsxService(ABC):
     @abstractmethod
     def fill_in_xlsx(
-        self, clients: list[MonthlyFullInfoAboutClientResponse], filename: str
+        self,
+        total_income_and_clients_data: MonthlyIncomeAndClientsDataResponse,
+        filename: str,
     ) -> None: ...

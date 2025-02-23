@@ -6,6 +6,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from src.constants.cell_hieght import CELL_WITH_CLIENTS_DATA_HEIGHT
 from src.constants.colors import (
+    BORDER_COLOR,
+    INCOME_BACKGROUND_COLOR,
     NEGATIVE_TRAINING_COUNT_COLOR,
     NEUTRAL_TRAINING_COUNT_COLOR,
     POSITIVE_TRAINING_COUNT_COLOR,
@@ -15,8 +17,9 @@ from src.constants.offsets import (
     OFFSET_AFTER_HEADERS_FOR_XLSX,
     OFFSET_BETWEEN_CLIENTS,
 )
-from src.schemas.response.client.monthly_full_info_about_client import (
-    MonthlyFullInfoAboutClientResponse,
+from src.constants.xlsx_config import CELL_WITH_TOTAL_INCOME_NAME
+from src.schemas.response.client.monthly_income_and_clients_data import (
+    MonthlyIncomeAndClientsDataResponse,
 )
 from src.schemas.response.month.base import MonthDetailsBaseResponse
 from src.schemas.response.payment.base import PaymentBaseResponse
@@ -56,18 +59,25 @@ class FillInXlsxService(AbstractFillInXlsxService):
             end_color=TABLE_BACKGROUND_COLOR,
             fill_type="solid",
         )
+        self._income_background_fill = PatternFill(
+            start_color=INCOME_BACKGROUND_COLOR,
+            end_color=INCOME_BACKGROUND_COLOR,
+            fill_type="solid",
+        )
 
-        self._bold_side = Side(border_style="thick", color="000000")
-        self._thin_side = Side(border_style="thin", color="000000")
+        self._bold_side = Side(border_style="thick", color=BORDER_COLOR)
+        self._thin_side = Side(border_style="thin", color=BORDER_COLOR)
 
     def fill_in_xlsx(
-        self, clients: List[MonthlyFullInfoAboutClientResponse], filename: str
+        self,
+        total_income_and_clients_data: MonthlyIncomeAndClientsDataResponse,
+        filename: str,
     ) -> None:
         wb = load_workbook(filename)
         ws = wb.active
         row_after_headers = OFFSET_AFTER_HEADERS_FOR_XLSX
 
-        for client in clients:
+        for client in total_income_and_clients_data.clients_data:
             client_start = row_after_headers
 
             self._fill_client_name(ws, client_start, client.name)
@@ -90,6 +100,12 @@ class FillInXlsxService(AbstractFillInXlsxService):
             self._apply_block_format(ws, client_start, block_end)
 
             row_after_headers = block_end + OFFSET_BETWEEN_CLIENTS + 1
+
+        self._add_row_with_total_income(
+            ws=ws,
+            row_after_headers=row_after_headers,
+            total_income=total_income_and_clients_data.total_income,
+        )
 
         wb.save(filename)
 
@@ -191,3 +207,33 @@ class FillInXlsxService(AbstractFillInXlsxService):
                 ws.cell(row=empty_row, column=c).fill = (
                     self._light_background_fill
                 )
+
+    def _add_row_with_total_income(
+        self, ws: Worksheet, row_after_headers: int, total_income: float
+    ) -> None:
+        row_for_total = row_after_headers
+        ws.cell(row=row_for_total, column=1, value=CELL_WITH_TOTAL_INCOME_NAME)
+        ws.cell(row=row_for_total, column=2, value="")
+        ws.cell(row=row_for_total, column=3, value=total_income)
+
+        self._apply_border_to_total_income_row(
+            ws=ws, row_for_total=row_for_total
+        )
+
+        for col in range(1, 4):
+            cell = ws.cell(row=row_for_total, column=col)
+            cell.fill = self._income_background_fill
+
+    def _apply_border_to_total_income_row(
+        self, ws: Worksheet, row_for_total: int
+    ) -> None:
+
+        for col in range(1, 4):
+            cell = ws.cell(row=row_for_total, column=col)
+
+            cell.border = Border(
+                top=self._bold_side if col == 1 else None,
+                bottom=self._bold_side,
+                left=self._bold_side if col == 1 else None,
+                right=self._bold_side if col == 3 else None,
+            )
